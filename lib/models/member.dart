@@ -6,6 +6,7 @@ class Member {
   String name;
   bool isActive;
   List<Role> roles;
+  List<DateTime> blockedDates;
 
   Member({
     required this.email,
@@ -13,5 +14,6 @@ class Member {
     required this.name,
     this.isActive = true,
     this.roles = const [],
+    this.blockedDates = const [],
   });
 }
