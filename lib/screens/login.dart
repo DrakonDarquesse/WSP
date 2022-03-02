@@ -88,8 +88,8 @@ class _LoginState extends State<Login> {
               children: [
                 pageTitle,
                 emailForm,
-                loginBtn,
                 passwordForm,
+                loginBtn,
                 registerLink,
               ],
               mainAxisSize: MainAxisSize.min,
