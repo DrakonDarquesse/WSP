@@ -7,6 +7,13 @@ class Role {
   bool isEnabled;
   Color color;
 
+  String getIsEnabled() {
+    if (isEnabled) {
+      return 'Enabled';
+    }
+    return 'Disabled';
+  }
+
   Role(
       {required this.name,
       required this.task,

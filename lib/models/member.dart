@@ -8,6 +8,13 @@ class Member {
   List<Role> roles;
   List<DateTime> blockedDates;
 
+  String getIsActive() {
+    if (isActive) {
+      return 'Active';
+    }
+    return 'Inactive';
+  }
+
   Member({
     required this.email,
     required this.password,
