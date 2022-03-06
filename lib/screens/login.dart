@@ -1,5 +1,6 @@
 import 'package:app/utils/adaptive.dart';
 import 'package:app/functions/firebase_auth.dart';
+import 'package:app/utils/toggles.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
 import 'package:app/utils/size.dart';
@@ -17,6 +18,13 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
+  bool _passwordVisible = false;
+
+  void _passwordVisibilityChanged() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +71,17 @@ class _LoginState extends State<Login> {
         return checkEmpty(value);
       },
       inputType: TextInputType.text,
-      obscureText: true,
+      obscureText: _passwordVisible,
       icon: Icons.lock,
       save: (String? value) {
         _password = value!;
       },
+      uti: GestureDetector(
+        onTap: () {
+          _passwordVisibilityChanged();
+        },
+        child: toggleVisiblity(_passwordVisible),
+      ),
     );
 
     Widget registerLink = TextWidget(

@@ -1,6 +1,7 @@
 import 'package:app/models/member.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:app/functions/firebase_auth.dart';
+import 'package:app/utils/toggles.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
 import 'package:app/utils/size.dart';
@@ -24,6 +25,8 @@ class _RegisterState extends State<Register> {
   String _username = '';
   String _password = '';
   String _cpassword = '';
+  bool _passwordVisible = false;
+  bool _cpasswordVisible = false;
 
   void _passwordChanged(String password) {
     setState(() {
@@ -34,6 +37,18 @@ class _RegisterState extends State<Register> {
   void _cpasswordChanged(String cpassword) {
     setState(() {
       _cpassword = cpassword;
+    });
+  }
+
+  void _passwordVisibilityChanged() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
+
+  void _cpasswordVisibilityChanged() {
+    setState(() {
+      _cpasswordVisible = !_cpasswordVisible;
     });
   }
 
@@ -86,7 +101,7 @@ class _RegisterState extends State<Register> {
                   },
                   callback: (val) => _passwordChanged(val),
                   inputType: TextInputType.text,
-                  obscureText: true,
+                  obscureText: _passwordVisible,
                   icon: Icons.lock,
                   save: (String? value) {
                     _password = value!;
@@ -94,6 +109,12 @@ class _RegisterState extends State<Register> {
                   helper: isMobile(context)
                       ? _mobilePasswordHelpText
                       : _desktopPasswordHelpText,
+                  uti: GestureDetector(
+                    onTap: () {
+                      _passwordVisibilityChanged();
+                    },
+                    child: toggleVisiblity(_passwordVisible),
+                  ),
                 ),
                 FormWidget(
                   info: 'Confirm Password',
@@ -101,27 +122,32 @@ class _RegisterState extends State<Register> {
                     return checkSameValue(_cpassword, _password);
                   },
                   inputType: TextInputType.text,
-                  obscureText: true,
+                  obscureText: _cpasswordVisible,
                   icon: Icons.lock,
                   callback: (val) => _cpasswordChanged(val),
+                  uti: GestureDetector(
+                    onTap: () {
+                      _cpasswordVisibilityChanged();
+                    },
+                    child: toggleVisiblity(_cpasswordVisible),
+                  ),
                 ),
                 ButtonWidget(
-                    text: 'Enter',
-                    callback: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        Member user = Member(
-                            email: _email,
-                            password: _password,
-                            name: _username);
-                        register(user);
-                        checkSignedIn().then((isSignedIn) {
-                          if (isSignedIn) {
-                            Navigator.pushNamed(context, '/home');
-                          }
-                        });
-                      }
-                    }),
+                  text: 'Enter',
+                  callback: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      Member user = Member(
+                          email: _email, password: _password, name: _username);
+                      register(user);
+                      checkSignedIn().then((isSignedIn) {
+                        if (isSignedIn) {
+                          Navigator.pushNamed(context, '/home');
+                        }
+                      });
+                    }
+                  },
+                ),
                 TextWidget(
                   text: [
                     const TextSpan(

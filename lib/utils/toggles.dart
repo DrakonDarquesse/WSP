@@ -2,14 +2,14 @@ import 'package:app/widgets/button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Icon ToggleVisiblity(bool visible) {
-  if (visible) {
-    return const Icon(Icons.visibility_off);
-  }
-  return const Icon(Icons.visibility);
+MouseRegion toggleVisiblity(bool visible) {
+  return MouseRegion(
+    child: Icon(visible ? Icons.visibility_off : Icons.visibility),
+    cursor: SystemMouseCursors.click,
+  );
 }
 
-ButtonWidget ToggleEditability(bool editable) {
+ButtonWidget toggleEditability(bool editable) {
   if (editable) {
     return ButtonWidget(
       text: 'Edit',
