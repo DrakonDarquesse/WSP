@@ -24,8 +24,9 @@ class TextWidget extends StatelessWidget {
         ),
         textAlign: alignment,
       ),
-      padding:
-          compact ? const EdgeInsets.only(bottom: 8) : const EdgeInsets.all(16),
+      padding: compact
+          ? const EdgeInsets.symmetric(vertical: 4)
+          : const EdgeInsets.all(16),
     );
   }
 }

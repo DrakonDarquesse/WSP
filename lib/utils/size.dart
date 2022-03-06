@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 
 Size dimension(BuildContext context) {
-  debugPrint('Size = ' + MediaQuery.of(context).size.toString());
   return MediaQuery.of(context).size;
 }
 
 double displayHeight(Size size) {
-  debugPrint('Height = ' + size.height.toString());
   return size.height;
 }
 
 double displayWidth(Size size) {
-  debugPrint('Width = ' + size.width.toString());
   return size.width;
 }
 
