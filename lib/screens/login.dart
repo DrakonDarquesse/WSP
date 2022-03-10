@@ -1,5 +1,5 @@
 import 'package:app/utils/adaptive.dart';
-import 'package:app/functions/firebase_auth.dart';
+import 'package:app/network/auth.dart';
 import 'package:app/utils/toggles.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
@@ -43,10 +43,12 @@ class _LoginState extends State<Login> {
       callback: () async {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          await login(_email, _password);
-          await checkSignedIn().then((isSignedIn) {
-            if (isSignedIn) {
+          await login(_email, _password).then((val) {
+            if (val == null) {
               Navigator.pushNamed(context, '/home');
+            } else {
+              //toast
+              print(val);
             }
           });
         }

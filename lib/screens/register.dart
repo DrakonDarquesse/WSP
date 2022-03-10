@@ -7,6 +7,7 @@ import 'package:app/widgets/all.dart';
 import 'package:app/utils/size.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/validate.dart';
+import 'package:app/network/auth.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -134,15 +135,14 @@ class _RegisterState extends State<Register> {
                 ),
                 ButtonWidget(
                   text: 'Enter',
-                  callback: () {
+                  callback: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      Member user = Member(
-                          email: _email, password: _password, name: _username);
-                      register(user);
-                      checkSignedIn().then((isSignedIn) {
-                        if (isSignedIn) {
+                      await register(_email, _password).then((val) {
+                        if (val == null) {
                           Navigator.pushNamed(context, '/home');
+                        } else {
+                          //toast
                         }
                       });
                     }

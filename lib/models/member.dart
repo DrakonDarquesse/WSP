@@ -2,7 +2,6 @@ import 'package:app/models/role.dart';
 
 class Member {
   String email;
-  String password;
   String name;
   bool isActive;
   List<Role> roles;
@@ -17,10 +16,25 @@ class Member {
 
   Member({
     required this.email,
-    required this.password,
     required this.name,
     this.isActive = true,
     this.roles = const [],
     this.blockedDates = const [],
   });
+
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return Member(
+      name: json['name'],
+      email: json['email'],
+      isActive: json['isActive'],
+      // roles: json['roles'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "email": email,
+        "isActive": isActive,
+        // "isEnabled": isEnabled,
+      };
 }

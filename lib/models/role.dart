@@ -14,9 +14,26 @@ class Role {
     return 'Disabled';
   }
 
-  Role(
-      {required this.name,
-      required this.task,
-      this.color = Colors.blueGrey,
-      this.isEnabled = true});
+  Role({
+    required this.name,
+    required this.task,
+    this.color = Colors.blueGrey,
+    this.isEnabled = true,
+  });
+
+  factory Role.fromJson(Map<String, dynamic> json) {
+    return Role(
+      name: json['name'],
+      task: json['task'],
+      color: Color(json['color']),
+      isEnabled: json['isEnabled'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "task": task,
+        "color": color.value,
+        "isEnabled": isEnabled,
+      };
 }
