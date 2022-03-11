@@ -35,8 +35,6 @@ class FormWidget extends StatefulWidget {
 class _FormWidgetState extends State<FormWidget> {
   final _textController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
-
   void _changeForm() {
     if (widget.callback != null) {
       widget.callback!(_textController.text);
@@ -71,18 +69,11 @@ class _FormWidgetState extends State<FormWidget> {
       ),
       helperText: widget.helper ?? '',
       helperMaxLines: isMobile(context) ? 5 : 3,
-      helperStyle: isMobile(context)
-          ? const TextStyle(fontSize: 12)
-          : const TextStyle(fontSize: 14),
       errorMaxLines: isMobile(context) ? 5 : 3,
-      errorStyle: isMobile(context)
-          ? const TextStyle(fontSize: 12)
-          : const TextStyle(fontSize: 14),
       suffixIcon: widget.uti,
     );
 
     TextFormField form = TextFormField(
-      key: _formKey,
       controller: _textController,
       validator: widget.validator,
       onSaved: widget.save,
@@ -93,13 +84,8 @@ class _FormWidgetState extends State<FormWidget> {
     );
 
     return Container(
-      child: Column(
-        children: [
-          form,
-        ],
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: form,
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
     );
   }
 }

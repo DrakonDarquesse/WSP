@@ -1,22 +1,18 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:app/models/role.dart';
 import 'package:http/http.dart';
 
 Future<List<Role>> fetchRole() async {
   const String api_url = 'http://localhost:3000/role';
-  Response response = await http.get(
+  Response response = await get(
     Uri.parse(api_url),
   );
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    List<dynamic> something =
+    List<dynamic> roles =
         jsonDecode(response.body).map((data) => Role.fromJson(data)).toList();
-    return something.cast<Role>();
+    return roles.cast<Role>();
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
     throw Exception('Failed to load role');
   }
 }
@@ -26,7 +22,7 @@ Future<void> addRole(Role role) async {
 
   Map<String, dynamic> body = role.toJson();
 
-  Response response = await http.post(
+  Response response = await post(
     Uri.parse(api_url),
     body: jsonEncode(body),
     headers: {
@@ -35,12 +31,50 @@ Future<void> addRole(Role role) async {
   );
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-
+    // something
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load role');
+    throw Exception('Failed to add role');
+  }
+}
+
+Future<void> editRole(Role role) async {
+  const String api_url = 'http://localhost:3000/editRole';
+
+  Map<String, dynamic> body = role.toJson();
+  print(jsonEncode(body));
+
+  Response response = await post(
+    Uri.parse(api_url),
+    body: jsonEncode(body),
+    headers: {
+      "content-type": "application/json",
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // something
+  } else {
+    throw Exception('Failed to edit role');
+  }
+}
+
+Future<void> deleteRole(Role role) async {
+  const String api_url = 'http://localhost:3000/deleteRole';
+
+  Map<String, dynamic> body = role.toJson();
+  print(jsonEncode(body));
+
+  Response response = await post(
+    Uri.parse(api_url),
+    body: jsonEncode(body),
+    headers: {
+      "content-type": "application/json",
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // something
+  } else {
+    throw Exception('Failed to delete role');
   }
 }

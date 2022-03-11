@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Role {
+  String? id;
   String name;
   String task;
   bool isEnabled;
@@ -15,6 +16,7 @@ class Role {
   }
 
   Role({
+    this.id,
     required this.name,
     required this.task,
     this.color = Colors.blueGrey,
@@ -23,6 +25,7 @@ class Role {
 
   factory Role.fromJson(Map<String, dynamic> json) {
     return Role(
+      id: json['id'],
       name: json['name'],
       task: json['task'],
       color: Color(json['color']),
@@ -31,6 +34,7 @@ class Role {
   }
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "name": name,
         "task": task,
         "color": color.value,
