@@ -10,35 +10,33 @@ class FormWidget extends StatefulWidget {
   final IconData? icon;
   final String? helper;
   final void Function(String)? callback;
+  final String? initialValue;
+  final GestureDetector? uti;
 
-  const FormWidget(
-      {Key? key,
-      required this.info,
-      this.validator,
-      this.save,
-      this.inputType = TextInputType.text,
-      this.obscureText = false,
-      this.callback,
-      this.icon,
-      this.helper})
-      : super(key: key);
+  const FormWidget({
+    Key? key,
+    required this.info,
+    this.validator,
+    this.save,
+    this.inputType = TextInputType.text,
+    this.obscureText = true,
+    this.callback,
+    this.icon,
+    this.helper,
+    this.initialValue,
+    this.uti,
+  }) : super(key: key);
 
   @override
   State<FormWidget> createState() => _FormWidgetState();
 }
 
 class _FormWidgetState extends State<FormWidget> {
-  String _data = '';
   final _textController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
-
-  void _channgeForm() {
-    setState(() {
-      _data = _textController.text;
-    });
+  void _changeForm() {
     if (widget.callback != null) {
-      widget.callback!(_data);
+      widget.callback!(_textController.text);
     }
   }
 
@@ -55,46 +53,38 @@ class _FormWidgetState extends State<FormWidget> {
     super.initState();
 
     // Start listening to changes.
-    _textController.addListener(_channgeForm);
-    _textController.text = _data;
+    _textController.addListener(_changeForm);
+    _textController.text = widget.initialValue ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          TextFormField(
-            key: _formKey,
-            decoration: InputDecoration(
-              hintText: 'Enter ${widget.info}',
-              border: const OutlineInputBorder(),
-              prefixIcon: Icon(widget.icon),
-              label: Text(
-                widget.info,
-              ),
-              helperText: widget.helper ?? '',
-              helperMaxLines: isMobile(context) ? 5 : 3,
-              helperStyle: isMobile(context)
-                  ? const TextStyle(fontSize: 12)
-                  : const TextStyle(fontSize: 14),
-              errorMaxLines: isMobile(context) ? 5 : 3,
-              errorStyle: isMobile(context)
-                  ? const TextStyle(fontSize: 12)
-                  : const TextStyle(fontSize: 14),
-              suffixIcon: Icon(widget.icon),
-            ),
-            controller: _textController,
-            validator: widget.validator,
-            onSaved: widget.save,
-            keyboardType: widget.inputType,
-            obscureText: widget.obscureText,
-            textAlignVertical: TextAlignVertical.bottom,
-          ),
-        ],
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    InputDecoration inputDecoration = InputDecoration(
+      hintText: 'Enter ${widget.info}',
+      border: const OutlineInputBorder(),
+      prefixIcon: widget.icon != null ? Icon(widget.icon) : null,
+      label: Text(
+        widget.info,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      helperText: widget.helper ?? '',
+      helperMaxLines: isMobile(context) ? 5 : 3,
+      errorMaxLines: isMobile(context) ? 5 : 3,
+      suffixIcon: widget.uti,
+    );
+
+    TextFormField form = TextFormField(
+      controller: _textController,
+      validator: widget.validator,
+      onSaved: widget.save,
+      keyboardType: widget.inputType,
+      obscureText: !widget.obscureText,
+      textAlignVertical: TextAlignVertical.bottom,
+      decoration: inputDecoration,
+    );
+
+    return Container(
+      child: form,
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
     );
   }
 }

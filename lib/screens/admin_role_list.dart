@@ -1,42 +1,18 @@
-import 'package:app/models/role.dart';
+import 'package:app/provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/widgets/all.dart';
-import 'package:app/widgets/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminRoleList extends StatefulWidget {
+class AdminRoleList extends ConsumerWidget {
   const AdminRoleList({
     Key? key,
   }) : super(key: key);
 
-  @override
-  State<AdminRoleList> createState() => AdminRoleListState();
-}
+  final IconData circleIcon = Icons.circle;
 
-class AdminRoleListState extends State<AdminRoleList> {
-  IconData circleIcon = Icons.circle;
-
-  List<Role> list = [
-    Role(
-      name: 'song lead',
-      task: 'sing',
-      color: Colors.indigo,
-    ),
-    Role(
-      name: 'usher',
-      task: 'welcome',
-      color: Colors.pink.shade300,
-      isEnabled: false,
-    ),
-    Role(
-      name: 'pianist',
-      task: 'plays piano',
-      color: Colors.blue.shade600,
-    ),
-  ];
-
-  List<Widget> header = const [
+  final List<Widget> header = const [
     Expanded(
       child: TextWidget(
         text: [
@@ -69,7 +45,9 @@ class AdminRoleListState extends State<AdminRoleList> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final roles = ref.watch(roleListProvider);
+
     List<Widget> widgetList(val) {
       return [
         Expanded(
@@ -81,13 +59,13 @@ class AdminRoleListState extends State<AdminRoleList> {
                   child: Icon(
                     circleIcon,
                     size: 20,
-                    color: list[val].color,
+                    color: roles[val].color,
                   ),
                 ),
                 alignment: PlaceholderAlignment.top,
               ),
               TextSpan(
-                text: list[val].name,
+                text: roles[val].name,
               ),
             ],
             compact: isMobile(context) ? true : false,
@@ -100,17 +78,17 @@ class AdminRoleListState extends State<AdminRoleList> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Icon(
-                  list[val].isEnabled
+                  roles[val].isEnabled
                       ? Icons.check_circle_outline
                       : Icons.cancel_outlined,
                   size: 20,
-                  color: list[val].isEnabled ? Colors.green : red(),
+                  color: roles[val].isEnabled ? Colors.green : red(),
                 ),
               ),
               alignment: PlaceholderAlignment.top,
             ),
             TextSpan(
-              text: list[val].isEnabled ? 'Enabled' : 'Disabled',
+              text: roles[val].isEnabled ? 'Enabled' : 'Disabled',
             ),
           ],
           compact: isMobile(context) ? true : false,
@@ -120,7 +98,7 @@ class AdminRoleListState extends State<AdminRoleList> {
             text: [
               const WidgetSpan(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                  padding: EdgeInsets.only(right: 8.0),
                   child: Icon(
                     Icons.people_alt_outlined,
                     size: 20,
@@ -140,32 +118,35 @@ class AdminRoleListState extends State<AdminRoleList> {
       ];
     }
 
+    TableWidget tableWidget = TableWidget(
+      dataList: roles,
+      widgetList: widgetList,
+      header: header,
+    );
+
+    Widget getTableWidget() {
+      return roles.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : tableWidget;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Members'),
+        title: const Text('Role'),
         backgroundColor: blue(),
       ),
       body: isMobile(context)
-          ? Center(
-              child: TableWidget(
-                dataList: list,
-                widgetList: widgetList,
-              ),
-            )
+          ? Center(child: getTableWidget())
           : Row(
               children: [
                 const NavBar(),
                 Expanded(
-                  child: TableWidget(
-                    dataList: list,
-                    widgetList: widgetList,
-                    header: header,
-                  ),
+                  child: getTableWidget(),
                 ),
               ],
               mainAxisSize: MainAxisSize.max,
             ),
-      bottomNavigationBar: isMobile(context) ? NavBar() : null,
+      bottomNavigationBar: isMobile(context) ? const NavBar() : null,
     );
   }
 }
