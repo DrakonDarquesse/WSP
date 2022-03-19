@@ -5,17 +5,19 @@ class ButtonWidget extends StatelessWidget {
   final String text;
   final VoidCallback callback;
   final IconData? icon;
+  final Color? color;
 
   const ButtonWidget({
     Key? key,
     required this.text,
     required this.callback,
     this.icon,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
       child: MaterialButton(
         onPressed: callback,
         child: RichText(
@@ -38,10 +40,10 @@ class ButtonWidget extends StatelessWidget {
           ),
         ),
         padding: const EdgeInsets.all(20),
-        color: blue(),
+        color: color ?? blue(),
         minWidth: 0,
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
     );
   }
 }

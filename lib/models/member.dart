@@ -1,6 +1,7 @@
 import 'package:app/models/role.dart';
 
 class Member {
+  String? id;
   String email;
   String name;
   bool isActive;
@@ -18,23 +19,30 @@ class Member {
     required this.email,
     required this.name,
     this.isActive = true,
-    this.roles = const [],
-    this.blockedDates = const [],
+    required this.roles,
+    required this.blockedDates,
+    this.id,
   });
 
   factory Member.fromJson(Map<String, dynamic> json) {
+    List<dynamic> roles =
+        json['roles'].map((data) => Role.fromJson(data)).toList();
+    List<dynamic> blockedDates =
+        json['blockedDates'].map((data) => Role.fromJson(data)).toList();
+
     return Member(
+      id: json['id'],
       name: json['name'],
       email: json['email'],
-      isActive: json['isActive'],
-      // roles: json['roles'],
+      isActive: json['isEnabled'],
+      roles: roles.cast<Role>(),
+      blockedDates: blockedDates.cast<DateTime>(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "name": name,
-        "email": email,
-        "isActive": isActive,
-        // "isEnabled": isEnabled,
+        "id": id,
+        "isEnabled": isActive,
+        "roles": roles.map((r) => r.toJson()).toList(),
       };
 }

@@ -1,68 +1,91 @@
+import 'package:app/provider.dart';
+import 'package:app/routes.dart';
+import 'package:app/utils/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/adaptive.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavBar extends StatefulWidget {
+class NavBar extends ConsumerWidget {
   const NavBar({Key? key}) : super(key: key);
 
-  @override
-  State<NavBar> createState() => _NavBarState();
-}
-
-class _NavBarState extends State<NavBar> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  int getIndex(String route) {
+    return navRoutes.indexOf(route);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    String route = ModalRoute.of(context)!.settings.name!;
+    final selectedIndex = getIndex(route);
+    void _onItemTapped(int index) {
+      switch (index) {
+        case 0:
+          break;
+        case 1:
+          Navigator.popAndPushNamed(context, '/');
+          break;
+        case 2:
+          ref.read(modelProvider.notifier).state = Model.role;
+          Navigator.pushReplacementNamed(context, '/adminRoleList');
+          break;
+        case 3:
+          ref.read(modelProvider.notifier).state = Model.member;
+          Navigator.pushReplacementNamed(context, '/adminMemberList');
+          break;
+        case 4:
+          Navigator.pushNamed(context, '/');
+          break;
+      }
+    }
+
     return isMobile(context)
         ? BottomNavigationBar(
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.schedule),
-                label: "Schedule",
+                icon: Nav.schedule.displayIcon,
+                label: Nav.schedule.displayText,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.event),
-                label: "Roster",
+                icon: Nav.roster.displayIcon,
+                label: Nav.roster.displayText,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.chat_rounded),
-                label: "Chat",
+                icon: Nav.roles.displayIcon,
+                label: Nav.roles.displayText,
+              ),
+              BottomNavigationBarItem(
+                icon: Nav.members.displayIcon,
+                label: Nav.members.displayText,
               )
             ],
             showUnselectedLabels: false,
             selectedItemColor: black(),
             backgroundColor: lightBlue(),
             unselectedItemColor: blue(),
-            currentIndex: _selectedIndex,
+            currentIndex: selectedIndex,
             onTap: _onItemTapped,
           )
         : NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
+            selectedIndex: selectedIndex,
+            onDestinationSelected: _onItemTapped,
             labelType: NavigationRailLabelType.selected,
-            destinations: const <NavigationRailDestination>[
+            destinations: <NavigationRailDestination>[
               NavigationRailDestination(
-                icon: Icon(Icons.schedule),
-                label: Text('First'),
+                icon: Nav.schedule.displayIcon,
+                label: Text(Nav.schedule.displayText),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.event),
-                label: Text('Second'),
+                icon: Nav.roster.displayIcon,
+                label: Text(Nav.roster.displayText),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.chat_rounded),
-                label: Text('Third'),
+                icon: Nav.roles.displayIcon,
+                label: Text(Nav.roles.displayText),
               ),
+              NavigationRailDestination(
+                icon: Nav.members.displayIcon,
+                label: Text(Nav.members.displayText),
+              )
             ],
             backgroundColor: lightBlue(),
             unselectedIconTheme: IconThemeData(color: blue()),

@@ -14,14 +14,14 @@ class PendingRequest extends StatefulWidget {
 class _PendingRequestState extends State<PendingRequest> {
   IconData icon = Icons.feedback_outlined;
   List<Map> list = [
-    {
-      'dateTime': DateTime.now(),
-      'event': Role(name: 'Song Lead', task: 'Sing').name,
-    },
-    {
-      'dateTime': DateTime.now(),
-      'event': Role(name: 'Usher', task: 'Welcome people').name,
-    }
+    // {
+    //   'dateTime': DateTime.now(),
+    //   'event': Role(name: 'Song Lead', task: 'Sing').name,
+    // },
+    // {
+    //   'dateTime': DateTime.now(),
+    //   'event': Role(name: 'Usher', task: 'Welcome people').name,
+    // }
   ];
 
   @override

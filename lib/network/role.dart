@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:app/models/role.dart';
-import 'package:http/http.dart';
 
 Future<List<Role>> fetchRole() async {
-  const String api_url = 'http://localhost:3000/role';
+  const String api_url = 'http://localhost:3000/roles';
   Response response = await get(
     Uri.parse(api_url),
   );
@@ -41,7 +40,6 @@ Future<void> editRole(Role role) async {
   const String api_url = 'http://localhost:3000/editRole';
 
   Map<String, dynamic> body = role.toJson();
-  print(jsonEncode(body));
 
   Response response = await post(
     Uri.parse(api_url),
@@ -62,7 +60,6 @@ Future<void> deleteRole(Role role) async {
   const String api_url = 'http://localhost:3000/deleteRole';
 
   Map<String, dynamic> body = role.toJson();
-  print(jsonEncode(body));
 
   Response response = await post(
     Uri.parse(api_url),

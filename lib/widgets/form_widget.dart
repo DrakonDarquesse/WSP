@@ -1,5 +1,4 @@
 import 'package:app/utils/adaptive.dart';
-import 'package:app/utils/toggles.dart';
 import 'package:flutter/material.dart';
 
 class FormWidget extends StatefulWidget {

@@ -1,6 +1,5 @@
 import 'package:app/models/member.dart';
 import 'package:app/utils/adaptive.dart';
-import 'package:app/functions/firebase_auth.dart';
 import 'package:app/utils/toggles.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
@@ -138,7 +137,7 @@ class _RegisterState extends State<Register> {
                   callback: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      await register(_email, _password).then((val) {
+                      await register(_email, _password, _username).then((val) {
                         if (val == null) {
                           Navigator.pushNamed(context, '/home');
                         } else {

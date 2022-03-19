@@ -1,31 +1,18 @@
+import 'package:app/provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
-import 'package:app/models/member.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminMemberList extends StatefulWidget {
+class AdminMemberList extends ConsumerWidget {
   const AdminMemberList({
     Key? key,
   }) : super(key: key);
 
-  @override
-  State<AdminMemberList> createState() => AdminMemberListState();
-}
+  final IconData personIcon = Icons.person;
 
-class AdminMemberListState extends State<AdminMemberList> {
-  IconData personIcon = Icons.person;
-  List<Member> list = [
-    Member(name: 'Ash', email: 'ash@gmail.com', password: 'password'),
-    Member(
-        name: 'Alex',
-        email: 'ash@gmail.com',
-        password: 'password',
-        isActive: false),
-    Member(name: 'Adam', email: 'ash@gmail.com', password: 'password'),
-  ];
-
-  List<Widget> header = const [
+  final List<Widget> header = const [
     Expanded(
       child: TextWidget(
         text: [
@@ -57,89 +44,93 @@ class AdminMemberListState extends State<AdminMemberList> {
     ),
   ];
 
-  List<Widget> widgetList(val) {
-    return [
-      Expanded(
-        child: TextWidget(
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final members = ref.watch(memberListProvider);
+
+    List<Widget> widgetList(val) {
+      return [
+        Expanded(
+          child: TextWidget(
+            text: [
+              WidgetSpan(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    personIcon,
+                    size: 20,
+                  ),
+                ),
+                alignment: PlaceholderAlignment.top,
+              ),
+              TextSpan(
+                text: members[val].name,
+              ),
+            ],
+            compact: isMobile(context) ? true : false,
+          ),
+          flex: isMobile(context) ? 0 : 1,
+        ),
+        TextWidget(
           text: [
             WidgetSpan(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Icon(
-                  personIcon,
+                  members[val].isActive
+                      ? Icons.notifications_outlined
+                      : Icons.notifications_off_outlined,
                   size: 20,
+                  color: members[val].isActive ? Colors.green : red(),
                 ),
               ),
               alignment: PlaceholderAlignment.top,
             ),
             TextSpan(
-              text: list[val].name,
+              text: members[val].isActive ? 'Active' : 'Inactive',
             ),
           ],
           compact: isMobile(context) ? true : false,
         ),
-        flex: isMobile(context) ? 0 : 1,
-      ),
-      TextWidget(
-        text: [
-          WidgetSpan(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                list[val].isActive
-                    ? Icons.notifications_outlined
-                    : Icons.notifications_off_outlined,
-                size: 20,
-                color: list[val].isActive ? Colors.green : red(),
-              ),
+        Expanded(
+          flex: isMobile(context) ? 0 : 1,
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: isMobile(context) ? 0 : 16),
+            child: Wrap(
+              children: members[val].roles.map<Chip>((role) {
+                return Chip(
+                  avatar: CircleAvatar(
+                    backgroundColor: role.color,
+                    child: Text(
+                      'A',
+                      style: TextStyle(color: lightBlue()),
+                    ),
+                  ),
+                  label: Text(role.name),
+                  backgroundColor: role.color.withOpacity(0.15),
+                );
+              }).toList(),
+              runSpacing: 8,
+              spacing: 10,
             ),
-            alignment: PlaceholderAlignment.top,
-          ),
-          TextSpan(
-            text: list[val].isActive ? 'Active' : 'Inactive',
-          ),
-        ],
-        compact: isMobile(context) ? true : false,
-      ),
-      Expanded(
-        flex: isMobile(context) ? 0 : 1,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: isMobile(context) ? 0 : 16),
-          child: Wrap(
-            children: [
-              Chip(
-                avatar: CircleAvatar(
-                  backgroundColor: Colors.grey.shade800,
-                  child: Text(
-                    'A',
-                    style: TextStyle(color: lightBlue()),
-                  ),
-                ),
-                label: const Text('Aaron Burr'),
-                backgroundColor: Colors.grey.shade200,
-              ),
-              Chip(
-                avatar: CircleAvatar(
-                  backgroundColor: Colors.grey.shade800,
-                  child: Text(
-                    'A',
-                    style: TextStyle(color: lightBlue()),
-                  ),
-                ),
-                label: const Text('Aaron Burr'),
-                backgroundColor: Colors.grey.shade200,
-              ),
-            ],
-            runSpacing: 8,
-            spacing: 10,
           ),
         ),
-      ),
-    ];
-  }
+      ];
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    TableWidget tableWidget = TableWidget(
+      dataList: members,
+      widgetList: widgetList,
+      header: header,
+    );
+
+    Widget getTableWidget() {
+      return members.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : tableWidget;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Members'),
@@ -147,26 +138,18 @@ class AdminMemberListState extends State<AdminMemberList> {
       ),
       body: isMobile(context)
           ? Center(
-              child: TableWidget(
-                dataList: list,
-                widgetList: widgetList,
-                header: header,
-              ),
+              child: getTableWidget(),
             )
           : Row(
               children: [
-                NavBar(),
+                const NavBar(),
                 Expanded(
-                  child: TableWidget(
-                    dataList: list,
-                    widgetList: widgetList,
-                    header: header,
-                  ),
+                  child: getTableWidget(),
                 ),
               ],
               mainAxisSize: MainAxisSize.max,
             ),
-      bottomNavigationBar: isMobile(context) ? NavBar() : null,
+      bottomNavigationBar: isMobile(context) ? const NavBar() : null,
     );
   }
 }
