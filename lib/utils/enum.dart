@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 enum Mode { edit, read, add }
-enum Model { role, member }
+enum Model { role, member, roster, roleMember, blockedDate }
 enum Nav { roster, schedule, members, roles }
+enum Status { accepted, pending, rejected }
 
 extension NavExtension on Nav {
   String get displayText {

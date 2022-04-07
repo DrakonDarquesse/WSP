@@ -13,9 +13,23 @@ Color red() {
 }
 
 Color yellow() {
-  return const Color(0xFFFAF261);
+  return const Color(0xFFFFD8C5);
 }
 
 Color lightBlue() {
   return const Color(0xFFC6FAF0);
 }
+
+Color warning() {
+  return Colors.amber.shade600;
+}
+
+Color safe() {
+  return Colors.green;
+}
+
+Color error() {
+  return red();
+}
+
+// TODO: add constants, check querysnapshot auto update

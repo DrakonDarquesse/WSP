@@ -16,11 +16,24 @@ Future<List<Member>> fetchMember() async {
   }
 }
 
+Future<dynamic> getOneMember(String id) async {
+  String api_url = 'http://localhost:3000/member/$id';
+
+  Response response = await get(
+    Uri.parse(api_url),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to fetch that member');
+  }
+}
+
 Future<void> editMember(Member role) async {
   const String api_url = 'http://localhost:3000/editMember';
 
   Map<String, dynamic> body = role.toJson();
-  print(jsonEncode(body));
 
   Response response = await post(
     Uri.parse(api_url),
@@ -38,10 +51,10 @@ Future<void> editMember(Member role) async {
 }
 
 Future<void> deleteMember(Member member) async {
-  const String api_url = 'http://localhost:3000/deleteRole';
+  const String api_url = 'http://localhost:3000/deleteMember';
 
   Map<String, dynamic> body = member.toJson();
-  print(jsonEncode(body));
+  // print(jsonEncode(body));
 
   Response response = await post(
     Uri.parse(api_url),
