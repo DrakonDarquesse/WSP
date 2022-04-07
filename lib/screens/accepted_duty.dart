@@ -1,38 +1,37 @@
+import 'package:app/provider.dart';
+import 'package:app/utils/member_roster.dart';
 import 'package:app/widgets/list_tile_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AcceptedDuty extends StatefulWidget {
+class AcceptedDuty extends ConsumerWidget {
   const AcceptedDuty({
     Key? key,
   }) : super(key: key);
 
-  @override
-  State<AcceptedDuty> createState() => _AcceptedDutyState();
-}
+  final IconData icon = Icons.event_available_rounded;
 
-class _AcceptedDutyState extends State<AcceptedDuty> {
-  IconData icon = Icons.event_available_rounded;
-  List<Map> list = [
-    // {
-    //   'dateTime': DateTime.now(),
-    //   'event': Role(name: 'Song Lead', task: 'Sing').name,
-    // },
-    // {
-    //   'dateTime': DateTime.now(),
-    //   'event': Role(name: 'Usher', task: 'Welcome people').name,
-    // }
-  ];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    List<Map<String, dynamic>> req = getMemberRoster(
+        ref.watch(sessionProvider), ref.watch(rosterListProvider));
+    List<Map<String, dynamic>> acceptedReq = getAccepted(req);
+    if (acceptedReq.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return ListView.builder(
       itemBuilder: (context, index) {
         return ListTileWidget(
-          dateTime: list[index]['dateTime'],
-          event: list[index]['event'],
+          dateTime: acceptedReq[index]['date'],
+          event: acceptedReq[index]['roleMember'].role.name,
           icon: icon,
+          trailing: [
+            const {},
+            {'text': 'action', 'onPressed': () {}}
+          ],
         );
       },
-      itemCount: list.length,
+      itemCount: acceptedReq.length,
     );
   }
 }

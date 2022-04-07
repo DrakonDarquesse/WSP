@@ -1,40 +1,67 @@
-import 'package:app/models/role.dart';
+import 'package:app/models/duty_roster.dart';
+import 'package:app/network/roster.dart';
+import 'package:app/provider.dart';
+import 'package:app/utils/enum.dart';
+import 'package:app/utils/member_roster.dart';
 import 'package:app/widgets/all.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PendingRequest extends StatefulWidget {
+class PendingRequest extends ConsumerWidget {
   const PendingRequest({
     Key? key,
   }) : super(key: key);
 
-  @override
-  State<PendingRequest> createState() => _PendingRequestState();
-}
-
-class _PendingRequestState extends State<PendingRequest> {
-  IconData icon = Icons.feedback_outlined;
-  List<Map> list = [
-    // {
-    //   'dateTime': DateTime.now(),
-    //   'event': Role(name: 'Song Lead', task: 'Sing').name,
-    // },
-    // {
-    //   'dateTime': DateTime.now(),
-    //   'event': Role(name: 'Usher', task: 'Welcome people').name,
-    // }
-  ];
+  final IconData icon = Icons.feedback_outlined;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    List<Map<String, dynamic>> req = getMemberRoster(
+        ref.watch(sessionProvider), ref.watch(rosterListProvider));
+    List<Map<String, dynamic>> pendingReq = getPending(req);
+    if (pendingReq.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return ListView.builder(
       itemBuilder: (context, index) {
+        DutyRoster roster = ref
+            .watch(rosterListProvider)
+            .singleWhere((roster) => roster.id == pendingReq[index]['id']);
         return ListTileWidget(
-          dateTime: list[index]['dateTime'],
-          event: list[index]['event'],
+          dateTime: pendingReq[index]['date'],
+          event: pendingReq[index]['roleMember'].role.name,
           icon: icon,
+          trailing: [
+            {
+              'text': 'Reject',
+              'onPressed': () {
+                roster.roleMembers
+                    .singleWhere((rm) => rm == pendingReq[index]['roleMember'])
+                    .status = Status.rejected;
+                editRoster(roster).then(
+                  (value) {
+                    ref.read(rosterListProvider.notifier).load();
+                  },
+                );
+              },
+            },
+            {
+              'text': 'Accept',
+              'onPressed': () {
+                roster.roleMembers
+                    .singleWhere((rm) => rm == pendingReq[index]['roleMember'])
+                    .status = Status.accepted;
+                editRoster(roster).then(
+                  (value) {
+                    ref.read(rosterListProvider.notifier).load();
+                  },
+                );
+              }
+            }
+          ],
         );
       },
-      itemCount: list.length,
+      itemCount: pendingReq.length,
     );
   }
 }
