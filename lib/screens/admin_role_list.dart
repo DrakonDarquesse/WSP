@@ -1,5 +1,7 @@
 import 'package:app/provider.dart';
+import 'package:app/provider/roster_provider.dart';
 import 'package:app/utils/colours.dart';
+import 'package:app/utils/enum.dart';
 import 'package:app/widgets/all.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
@@ -47,6 +49,7 @@ class AdminRoleList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final roles = ref.watch(roleListProvider);
+    final members = ref.watch(memberListProvider);
 
     List<Widget> widgetList(val) {
       return [
@@ -82,13 +85,13 @@ class AdminRoleList extends ConsumerWidget {
                       ? Icons.check_circle_outline
                       : Icons.cancel_outlined,
                   size: 20,
-                  color: roles[val].isEnabled ? Colors.green : red(),
+                  color: roles[val].isEnabled ? safe() : red(),
                 ),
               ),
               alignment: PlaceholderAlignment.top,
             ),
             TextSpan(
-              text: roles[val].isEnabled ? 'Enabled' : 'Disabled',
+              text: roles[val].getIsEnabled(),
             ),
           ],
           compact: isMobile(context) ? true : false,
@@ -107,8 +110,10 @@ class AdminRoleList extends ConsumerWidget {
                 alignment: PlaceholderAlignment.top,
               ),
               TextSpan(
-                text: 5.toString(),
-              ),
+                  text: members
+                      .where((m) => m.roles.contains(roles[val]))
+                      .length
+                      .toString()),
             ],
             compact: isMobile(context) ? true : false,
             alignment: isMobile(context) ? TextAlign.start : TextAlign.end,
@@ -136,12 +141,53 @@ class AdminRoleList extends ConsumerWidget {
         backgroundColor: blue(),
       ),
       body: isMobile(context)
-          ? Center(child: getTableWidget())
+          ? Column(
+              children: [
+                ButtonWidget(
+                  text: 'Add',
+                  callback: () {
+                    ref.watch(modeProvider.notifier).state = Mode.add;
+                    ref.read(roleProvider.notifier).reset();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AddDialogWidget(
+                          text: 'Add ${ref.read(modelProvider).name}',
+                        );
+                      },
+                    );
+                  },
+                  icon: Icons.add_circle_outline_rounded,
+                ),
+                Center(child: getTableWidget()),
+              ],
+            )
           : Row(
               children: [
                 const NavBar(),
                 Expanded(
-                  child: getTableWidget(),
+                  child: Column(
+                    children: [
+                      ButtonWidget(
+                        text: 'Add',
+                        callback: () {
+                          ref.watch(modeProvider.notifier).state = Mode.add;
+                          ref.read(roleProvider.notifier).reset();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AddDialogWidget(
+                                text: 'Add ${ref.read(modelProvider).name}',
+                              );
+                            },
+                          );
+                        },
+                        icon: Icons.add_circle_outline_rounded,
+                      ),
+                      getTableWidget(),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
                 ),
               ],
               mainAxisSize: MainAxisSize.max,

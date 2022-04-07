@@ -45,7 +45,7 @@ class _LoginState extends State<Login> {
           _formKey.currentState!.save();
           await login(_email, _password).then((val) {
             if (val == null) {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/memberSchedule');
             } else {
               //toast
               print(val);

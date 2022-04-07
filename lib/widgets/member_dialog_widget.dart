@@ -24,7 +24,7 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
       if (select) {
         _member.roles.add(role);
       } else {
-        _member.roles.removeWhere((r) => r.name == role.name);
+        _member.roles.removeWhere((r) => r == role);
       }
 
       if (widget.callback != null) {
@@ -44,6 +44,22 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
     final _roles = ref.watch(roleListProvider);
     return Column(
       children: [
+        TextWidget(
+          text: [
+            TextSpan(
+              text: _member.name,
+              style: Theme.of(context).textTheme.headline6,
+            )
+          ],
+        ),
+        TextWidget(
+          text: [
+            TextSpan(
+              text: _member.email,
+              style: Theme.of(context).textTheme.subtitle1,
+            )
+          ],
+        ),
         TextWidget(text: [
           TextSpan(
             text: 'Role',
@@ -68,9 +84,9 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
                       onSelected: (bool select) {
                         _changeRoles(role, select);
                       },
-                      selectedColor: yellow().withOpacity(0.5),
+                      selectedColor: yellow(),
                       selected: widget.member.roles
-                          .where((r) => r.name == role.name)
+                          .where((r) => r == role)
                           .toList()
                           .isNotEmpty,
                     );

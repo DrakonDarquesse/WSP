@@ -22,7 +22,12 @@ class ButtonWidget extends StatelessWidget {
         onPressed: callback,
         child: RichText(
           text: TextSpan(
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(
+                color: color == null
+                    ? Colors.white
+                    : color!.computeLuminance() > 0.5
+                        ? black()
+                        : Colors.white),
             children: icon != null
                 ? [
                     WidgetSpan(

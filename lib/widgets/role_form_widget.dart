@@ -20,9 +20,9 @@ class _RoleFormWidgetState extends ConsumerState<RoleFormWidget> {
   late final Role _role;
 
   List<Color> currentColors = [
-    Colors.amber,
-    Colors.yellow,
-    Colors.green,
+    Colors.yellow.shade600,
+    Colors.lime.shade600,
+    Colors.green.shade600,
     Colors.teal,
     Colors.blue,
     Colors.indigo,
