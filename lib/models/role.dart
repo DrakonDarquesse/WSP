@@ -39,4 +39,12 @@ class Role {
         "color": color.value,
         "isEnabled": isEnabled,
       };
+
+  @override
+  bool operator ==(Object other) {
+    return other is Role && name.toLowerCase() == other.name.toLowerCase();
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 }

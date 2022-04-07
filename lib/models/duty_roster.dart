@@ -1,29 +1,52 @@
 import 'package:app/models/member.dart';
 import 'package:app/models/role.dart';
+import 'package:app/models/role_member.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
+
+Function eq = const DeepCollectionEquality.unordered().equals;
 
 class DutyRoster {
-  DateTime _date;
-  String _title;
-  Member _member;
-  Role _role;
+  String? id;
+  DateTime date;
+  String title;
+  List<RoleMember> roleMembers;
 
   DutyRoster({
-    date,
-    title,
-    member,
-    role,
-  })  : _date = date,
-        _title = title,
-        _member = member,
-        _role = role;
+    required this.date,
+    required this.title,
+    required this.roleMembers,
+    this.id,
+  });
 
-  get date => _date;
-  get title => _title;
-  get member => _member;
-  get role => _role;
+  List<Member> getMembers() {
+    return roleMembers.map<Member>((e) => e.member).toList();
+  }
 
-  set date(value) => _date = value;
-  set title(value) => _title = value;
-  set member(value) => _member = value;
-  set role(value) => _role = value;
+  Set<Role> getRoles() {
+    return roleMembers.map<Role>((e) => e.role).toSet();
+  }
+
+  factory DutyRoster.fromJson(Map<String, dynamic> json) {
+    List<dynamic> roleMember =
+        json['roleMember'].map((data) => RoleMember.fromJson(data)).toList();
+    return DutyRoster(
+      id: json['id'],
+      date: DateTime.parse(json['date']),
+      title: json['title'],
+      roleMembers: roleMember.cast<RoleMember>(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "date": date.toIso8601String(),
+        "title": title,
+        "roleMember": roleMembers.map((r) => r.toJson()).toList(),
+      };
+
+  @override
+  bool operator ==(Object other) {
+    return other is DutyRoster && setEquals(getRoles(), other.getRoles());
+  }
 }
