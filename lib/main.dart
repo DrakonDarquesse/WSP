@@ -1,15 +1,15 @@
 import 'package:app/navigator_middleware.dart';
 import 'package:app/provider.dart';
 import 'package:app/utils/colours.dart';
+import 'package:app/utils/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/routes.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
-
-NavigatorMiddleware<PageRoute> middleware = NavigatorMiddleware<PageRoute>();
 
 class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -17,9 +17,26 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    NavigatorMiddleware<PageRoute> middleware =
+        NavigatorMiddleware<PageRoute>((route) {
+      if (route.settings.name == '/adminRoleList') {
+        ref.read(modelProvider.notifier).state = Model.role;
+      }
+      if (route.settings.name == '/adminMemberList') {
+        ref.read(modelProvider.notifier).state = Model.member;
+      }
+
+      if (route.settings.name == '/adminRosterList') {
+        ref.read(modelProvider.notifier).state = Model.roster;
+      }
+
+      if (route.settings.name == '/memberSchedule') {
+        ref.read(modelProvider.notifier).state = Model.blockedDate;
+      }
+    });
     return MaterialApp(
       title: 'Worship Service Planner',
-      initialRoute: '/adminMemberList',
+      initialRoute: '/adminRosterList',
       routes: routes,
       theme: ThemeData(
         primaryColor: lightBlue(),

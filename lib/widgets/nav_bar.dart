@@ -20,19 +20,21 @@ class NavBar extends ConsumerWidget {
     void _onItemTapped(int index) {
       switch (index) {
         case 0:
+          Navigator.popAndPushNamed(context, '/memberSchedule');
           break;
         case 1:
           Navigator.popAndPushNamed(context, '/');
           break;
         case 2:
-          ref.read(modelProvider.notifier).state = Model.role;
           Navigator.pushReplacementNamed(context, '/adminRoleList');
           break;
         case 3:
-          ref.read(modelProvider.notifier).state = Model.member;
           Navigator.pushReplacementNamed(context, '/adminMemberList');
           break;
         case 4:
+          Navigator.pushNamed(context, '/adminRosterList');
+          break;
+        case 5:
           Navigator.pushNamed(context, '/');
           break;
       }
@@ -56,6 +58,10 @@ class NavBar extends ConsumerWidget {
               BottomNavigationBarItem(
                 icon: Nav.members.displayIcon,
                 label: Nav.members.displayText,
+              ),
+              BottomNavigationBarItem(
+                icon: Nav.roster.displayIcon,
+                label: Nav.roster.displayText,
               )
             ],
             showUnselectedLabels: false,
@@ -85,6 +91,10 @@ class NavBar extends ConsumerWidget {
               NavigationRailDestination(
                 icon: Nav.members.displayIcon,
                 label: Text(Nav.members.displayText),
+              ),
+              NavigationRailDestination(
+                icon: Nav.roster.displayIcon,
+                label: Text(Nav.roster.displayText),
               )
             ],
             backgroundColor: lightBlue(),
