@@ -1,4 +1,3 @@
-export 'home.dart';
 export 'admin_member_list.dart';
 export 'loading.dart';
 export 'login.dart';

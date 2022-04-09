@@ -1,26 +1,26 @@
 import 'dart:convert';
+import 'package:app/models/role_deck.dart';
 import 'package:http/http.dart';
-import 'package:app/models/role.dart';
 
-Future<List<Role>> fetchRole() async {
-  const String api_url = 'http://localhost:3000/roles';
+Future<List<RoleDeck>> fetchRoleDeck() async {
+  const String api_url = 'http://localhost:3000/roleDecks';
   Response response = await get(
     Uri.parse(api_url),
   );
   if (response.statusCode == 200) {
-    // print(response.body);
-    List<dynamic> roles =
-        jsonDecode(response.body).map((data) => Role.fromJson(data)).toList();
-    return roles.cast<Role>();
+    List<dynamic> roleDecks = jsonDecode(response.body)
+        .map((data) => RoleDeck.fromJson(data))
+        .toList();
+    return roleDecks.cast<RoleDeck>();
   } else {
-    throw Exception('Failed to load role');
+    throw Exception('Failed to load member');
   }
 }
 
-Future<void> addRole(Role role) async {
-  const String api_url = 'http://localhost:3000/addRole';
+Future<void> addRoleDeck(RoleDeck roleDeck) async {
+  const String api_url = 'http://localhost:3000/addRoleDeck';
 
-  Map<String, dynamic> body = role.toJson();
+  Map<String, dynamic> body = roleDeck.toJson();
 
   Response response = await post(
     Uri.parse(api_url),
@@ -37,10 +37,10 @@ Future<void> addRole(Role role) async {
   }
 }
 
-Future<void> editRole(Role role) async {
-  const String api_url = 'http://localhost:3000/editRole';
+Future<void> editRoleDeck(RoleDeck roleDeck) async {
+  const String api_url = 'http://localhost:3000/editRoleDeck';
 
-  Map<String, dynamic> body = role.toJson();
+  Map<String, dynamic> body = roleDeck.toJson();
 
   Response response = await post(
     Uri.parse(api_url),
@@ -57,10 +57,11 @@ Future<void> editRole(Role role) async {
   }
 }
 
-Future<void> deleteRole(Role role) async {
-  const String api_url = 'http://localhost:3000/deleteRole';
+Future<void> deleteRoleDeck(RoleDeck roleDeck) async {
+  const String api_url = 'http://localhost:3000/deleteRoleDeck';
 
-  Map<String, dynamic> body = role.toJson();
+  Map<String, dynamic> body = roleDeck.toJson();
+  // print(jsonEncode(body));
 
   Response response = await post(
     Uri.parse(api_url),

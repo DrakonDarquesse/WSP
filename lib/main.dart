@@ -5,7 +5,6 @@ import 'package:app/utils/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/routes.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -19,14 +18,14 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     NavigatorMiddleware<PageRoute> middleware =
         NavigatorMiddleware<PageRoute>((route) {
-      if (route.settings.name == '/adminRoleList') {
+      if (route.settings.name == '/role') {
         ref.read(modelProvider.notifier).state = Model.role;
       }
-      if (route.settings.name == '/adminMemberList') {
+      if (route.settings.name == '/member') {
         ref.read(modelProvider.notifier).state = Model.member;
       }
 
-      if (route.settings.name == '/adminRosterList') {
+      if (route.settings.name == '/roster') {
         ref.read(modelProvider.notifier).state = Model.roster;
       }
 
@@ -36,7 +35,7 @@ class MyApp extends ConsumerWidget {
     });
     return MaterialApp(
       title: 'Worship Service Planner',
-      initialRoute: '/adminRosterList',
+      initialRoute: '/roster',
       routes: routes,
       theme: ThemeData(
         primaryColor: lightBlue(),
