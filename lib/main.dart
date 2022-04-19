@@ -35,7 +35,7 @@ class MyApp extends ConsumerWidget {
     });
     return MaterialApp(
       title: 'Worship Service Planner',
-      initialRoute: '/roster',
+      initialRoute: '/login',
       routes: routes,
       theme: ThemeData(
         primaryColor: lightBlue(),
@@ -45,6 +45,7 @@ class MyApp extends ConsumerWidget {
             ),
       ),
       navigatorObservers: [middleware],
+      debugShowCheckedModeBanner: false,
     );
   }
 }
