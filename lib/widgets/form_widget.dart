@@ -12,20 +12,22 @@ class FormWidget extends StatefulWidget {
   final void Function(String)? callback;
   final String? initialValue;
   final GestureDetector? uti;
+  final bool readOnly;
 
-  const FormWidget({
-    Key? key,
-    required this.info,
-    this.validator,
-    this.save,
-    this.inputType = TextInputType.text,
-    this.obscureText = true,
-    this.callback,
-    this.icon,
-    this.helper,
-    this.initialValue,
-    this.uti,
-  }) : super(key: key);
+  const FormWidget(
+      {Key? key,
+      required this.info,
+      this.validator,
+      this.save,
+      this.inputType = TextInputType.text,
+      this.obscureText = true,
+      this.callback,
+      this.icon,
+      this.helper,
+      this.initialValue,
+      this.uti,
+      this.readOnly = false})
+      : super(key: key);
 
   @override
   State<FormWidget> createState() => _FormWidgetState();
@@ -73,18 +75,18 @@ class _FormWidgetState extends State<FormWidget> {
     );
 
     TextFormField form = TextFormField(
-      controller: _textController,
-      validator: widget.validator,
-      onSaved: widget.save,
-      keyboardType: widget.inputType,
-      obscureText: !widget.obscureText,
-      textAlignVertical: TextAlignVertical.bottom,
-      decoration: inputDecoration,
-    );
+        controller: _textController,
+        validator: widget.validator,
+        onSaved: widget.save,
+        keyboardType: widget.inputType,
+        obscureText: !widget.obscureText,
+        textAlignVertical: TextAlignVertical.bottom,
+        decoration: inputDecoration,
+        readOnly: widget.readOnly);
 
     return Container(
       child: form,
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
     );
   }
 }

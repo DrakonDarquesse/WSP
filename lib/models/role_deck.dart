@@ -13,7 +13,7 @@ class RoleDeck {
 
   String getRoles() {
     return roles.fold(
-        '', (previousValue, element) => previousValue + element.name);
+        '', (previousValue, element) => previousValue + ' ' + element.name);
   }
 
   factory RoleDeck.fromJson(Map<String, dynamic> json) {

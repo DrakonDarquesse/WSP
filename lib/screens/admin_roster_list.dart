@@ -7,6 +7,7 @@ import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
 import 'package:app/utils/organize_roster.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:app/widgets/volunteer_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
@@ -133,9 +134,8 @@ class AdminRosterList extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Members'),
-        backgroundColor: blue(),
+      appBar: const CustomAppBar(
+        text: 'Roster',
       ),
       body: isMobile(context)
           ? Center(
@@ -147,23 +147,27 @@ class AdminRosterList extends ConsumerWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      ButtonWidget(
-                        text: 'Add',
-                        callback: () {
-                          ref.watch(modeProvider.notifier).state = Mode.add;
-                          ref.watch(rosterProvider.notifier).state = DutyRoster(
-                              date: DateTime.now(), title: "", roleMembers: []);
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AddDialogWidget(
-                                text: 'Add ${ref.read(modelProvider).name}',
-                              );
-                            },
-                          );
-                        },
-                        icon: Icons.add_circle_outline_rounded,
-                      ),
+                      if (ref.watch(sessionProvider.notifier).role == 'admin')
+                        ButtonWidget(
+                          text: 'Add',
+                          callback: () {
+                            ref.watch(modeProvider.notifier).state = Mode.add;
+                            ref.watch(rosterProvider.notifier).state =
+                                DutyRoster(
+                                    date: DateTime.now(),
+                                    title: "",
+                                    roleMembers: []);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AddDialogWidget(
+                                  text: 'Add ${ref.read(modelProvider).name}',
+                                );
+                              },
+                            );
+                          },
+                          icon: Icons.add_circle_outline_rounded,
+                        ),
                       ...getTableWidget(),
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,

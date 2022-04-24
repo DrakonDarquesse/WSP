@@ -2,7 +2,9 @@ import 'package:app/provider.dart';
 import 'package:app/provider/roster_provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
+import 'package:app/utils/size.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,33 +134,55 @@ class AdminRoleList extends ConsumerWidget {
     Widget getTableWidget() {
       return roles.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : tableWidget;
+          : ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxHeight: percentHeight(context, 0.8)),
+              child: SingleChildScrollView(
+                child: tableWidget,
+              ),
+            );
     }
 
+    Widget addBtn = ButtonWidget(
+      text: 'Add',
+      callback: () {
+        ref.watch(modeProvider.notifier).state = Mode.add;
+        ref.read(roleProvider.notifier).reset();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddDialogWidget(
+              text: 'Add ${ref.read(modelProvider).name}',
+            );
+          },
+        );
+      },
+      icon: Icons.add_circle_outline_rounded,
+    );
+
+    Widget roleDeckBtn = ButtonWidget(
+      text: 'Role Deck',
+      callback: () {
+        Navigator.pushNamed(context, '/roleDeck');
+      },
+      icon: Icons.view_column_outlined,
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Role'),
-        backgroundColor: blue(),
+      appBar: const CustomAppBar(
+        text: 'Roles',
       ),
       body: isMobile(context)
           ? Column(
               children: [
-                ButtonWidget(
-                  text: 'Add',
-                  callback: () {
-                    ref.watch(modeProvider.notifier).state = Mode.add;
-                    ref.read(roleProvider.notifier).reset();
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AddDialogWidget(
-                          text: 'Add ${ref.read(modelProvider).name}',
-                        );
-                      },
-                    );
-                  },
-                  icon: Icons.add_circle_outline_rounded,
-                ),
+                if (ref.watch(sessionProvider.notifier).role == 'admin')
+                  Row(
+                    children: [
+                      roleDeckBtn,
+                      addBtn,
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.end,
+                  ),
                 Center(child: getTableWidget()),
               ],
             )
@@ -168,22 +192,14 @@ class AdminRoleList extends ConsumerWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      ButtonWidget(
-                        text: 'Add',
-                        callback: () {
-                          ref.watch(modeProvider.notifier).state = Mode.add;
-                          ref.read(roleProvider.notifier).reset();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AddDialogWidget(
-                                text: 'Add ${ref.read(modelProvider).name}',
-                              );
-                            },
-                          );
-                        },
-                        icon: Icons.add_circle_outline_rounded,
-                      ),
+                      if (ref.watch(sessionProvider.notifier).role == 'admin')
+                        Row(
+                          children: [
+                            roleDeckBtn,
+                            addBtn,
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.end,
+                        ),
                       getTableWidget(),
                     ],
                     crossAxisAlignment: CrossAxisAlignment.end,

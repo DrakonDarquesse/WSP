@@ -3,7 +3,8 @@ import 'package:http/http.dart';
 import 'package:app/models/duty_roster.dart';
 
 Future<List<DutyRoster>> fetchRoster() async {
-  const String api_url = 'http://localhost:3000/rosters';
+  const String api_url = 'https://afternoon-shore-55342.herokuapp.com/rosters';
+  // const String api_url = 'http://localhost:3000/rosters';
   Response response = await get(
     Uri.parse(api_url),
   );
@@ -19,7 +20,9 @@ Future<List<DutyRoster>> fetchRoster() async {
 }
 
 Future<void> addRoster(DutyRoster roster) async {
-  const String api_url = 'http://localhost:3000/addRoster';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/addRoster';
+  // const String api_url = 'http://localhost:3000/addRoster';
 
   Map<String, dynamic> body = roster.toJson();
 
@@ -39,7 +42,9 @@ Future<void> addRoster(DutyRoster roster) async {
 }
 
 Future<void> editRoster(DutyRoster roster) async {
-  const String api_url = 'http://localhost:3000/editRoster';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/editRoster';
+  // const String api_url = 'http://localhost:3000/editRoster';
 
   Map<String, dynamic> body = roster.toJson();
 
@@ -59,7 +64,9 @@ Future<void> editRoster(DutyRoster roster) async {
 }
 
 Future<void> deleteRoster(DutyRoster roster) async {
-  const String api_url = 'http://localhost:3000/deleteRoster';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/deleteRoster';
+  // const String api_url = 'http://localhost:3000/deleteRoster';
 
   Map<String, dynamic> body = roster.toJson();
 

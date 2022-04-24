@@ -1,5 +1,6 @@
 import 'package:app/screens/accepted_duty.dart';
 import 'package:app/utils/colours.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
 import 'package:app/utils/adaptive.dart';
@@ -38,15 +39,15 @@ class _MemberScheduleState extends State<MemberSchedule>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        bottom: isMobile(context)
+      appBar: CustomAppBar(
+        text: widget.title,
+        tab: isMobile(context)
             ? TabBar(
                 tabs: tabs,
                 controller: _tabController,
               )
             : null,
-        backgroundColor: blue(),
+        backable: false,
       ),
       body: isMobile(context)
           ? TabBarView(
@@ -63,14 +64,34 @@ class _MemberScheduleState extends State<MemberSchedule>
                 const Padding(padding: EdgeInsets.all(10)),
                 Expanded(
                   child: Column(
-                    children: const [
-                      TextWidget(
-                        text: [
-                          TextSpan(text: 'Blocked Dates'),
+                    children: [
+                      Row(
+                        children: [
+                          const TextWidget(
+                            text: [
+                              TextSpan(text: 'Blocked Dates'),
+                            ],
+                            alignment: TextAlign.center,
+                          ),
+                          IconButton(
+                            iconSize: 18,
+                            icon: const Icon(Icons.add_circle_outline),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const AddDialogWidget(
+                                    text: 'Add Blocked Date',
+                                  );
+                                },
+                              );
+                            },
+                            color: blue(),
+                          ),
                         ],
-                        alignment: TextAlign.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                       ),
-                      Expanded(child: BlockedDates()),
+                      const Expanded(child: BlockedDates()),
                     ],
                   ),
                   flex: 1,

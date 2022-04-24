@@ -3,7 +3,9 @@ import 'package:app/models/role_deck.dart';
 import 'package:http/http.dart';
 
 Future<List<RoleDeck>> fetchRoleDeck() async {
-  const String api_url = 'http://localhost:3000/roleDecks';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/roleDecks';
+  // const String api_url = 'http://localhost:3000/roleDecks';
   Response response = await get(
     Uri.parse(api_url),
   );
@@ -18,7 +20,9 @@ Future<List<RoleDeck>> fetchRoleDeck() async {
 }
 
 Future<void> addRoleDeck(RoleDeck roleDeck) async {
-  const String api_url = 'http://localhost:3000/addRoleDeck';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/addRoleDeck';
+  // const String api_url = 'http://localhost:3000/addRoleDeck';
 
   Map<String, dynamic> body = roleDeck.toJson();
 
@@ -38,7 +42,9 @@ Future<void> addRoleDeck(RoleDeck roleDeck) async {
 }
 
 Future<void> editRoleDeck(RoleDeck roleDeck) async {
-  const String api_url = 'http://localhost:3000/editRoleDeck';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/editRoleDeck';
+  // const String api_url = 'http://localhost:3000/editRoleDeck';
 
   Map<String, dynamic> body = roleDeck.toJson();
 
@@ -58,7 +64,9 @@ Future<void> editRoleDeck(RoleDeck roleDeck) async {
 }
 
 Future<void> deleteRoleDeck(RoleDeck roleDeck) async {
-  const String api_url = 'http://localhost:3000/deleteRoleDeck';
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/deleteRoleDeck';
+  // const String api_url = 'http://localhost:3000/deleteRoleDeck';
 
   Map<String, dynamic> body = roleDeck.toJson();
   // print(jsonEncode(body));

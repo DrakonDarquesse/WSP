@@ -1,6 +1,7 @@
 import 'package:app/provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,9 +133,8 @@ class AdminMemberList extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Members'),
-        backgroundColor: blue(),
+      appBar: const CustomAppBar(
+        text: 'Members',
       ),
       body: isMobile(context)
           ? Center(

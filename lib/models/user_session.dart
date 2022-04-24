@@ -6,25 +6,29 @@ class UserSession extends StateNotifier<Member?> {
   UserSession({required this.loadSession}) : super(null);
 
   final LoadSession loadSession;
-  late final String? id;
-  late final String? role;
+  late String? id;
+  late String? role;
+  bool signedIn = false;
 
-  void getId() async {
-    try {
-      await loadSession.loadId();
-    } finally {
-      id = loadSession.signedInMemberId;
-      getMember();
-    }
-  }
-
-  void getMember() async {
+  Future<void> getMember() async {
     try {
       state = null;
       await loadSession.loadMember();
     } finally {
       state = loadSession.member;
       role = loadSession.role;
+      signedIn = state != null;
+    }
+  }
+
+  void clearSession() async {
+    try {
+      state = null;
+      await loadSession.clearSession();
+    } finally {
+      state = loadSession.member;
+      role = loadSession.role;
+      signedIn = false;
     }
   }
 }

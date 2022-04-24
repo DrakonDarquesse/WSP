@@ -6,7 +6,7 @@ class MemberNotifier extends StateNotifier<Member> {
       : super(Member(email: '', name: '', roles: [], blockedDates: []));
 
   void reset() {
-    state = Member(email: '', name: '', roles: [], blockedDates: []);
+    state = Member.empty();
   }
 
   void assign(Member member) {

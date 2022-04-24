@@ -1,4 +1,4 @@
-import 'package:app/utils/adaptive.dart';
+import 'package:app/models/role.dart';
 
 String? checkEmpty(String? value) {
   if (value == null || value.isEmpty) {
@@ -46,6 +46,13 @@ bool passwordLogic(String? password) {
 String? checkSameValue(String? value, String? value2) {
   if (value != value2) {
     return 'Passwords must be same';
+  }
+  return null;
+}
+
+String? checkDuplicate(List<Role> roleList, String name) {
+  if (roleList.every((r) => r.name == name)) {
+    return 'Already have this role, please use another name';
   }
   return null;
 }

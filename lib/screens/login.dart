@@ -1,3 +1,4 @@
+import 'package:app/provider.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:app/network/auth.dart';
 import 'package:app/utils/toggles.dart';
@@ -6,15 +7,17 @@ import 'package:app/widgets/all.dart';
 import 'package:app/utils/size.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/validate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/scheduler.dart';
 
-class Login extends StatefulWidget {
+class Login extends ConsumerStatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  ConsumerState<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends ConsumerState<Login> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
@@ -44,7 +47,9 @@ class _LoginState extends State<Login> {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           await login(_email, _password).then((val) {
-            if (val == null) {
+            if (val != '1' && val != '2') {
+              ref.watch(sessionProvider.notifier).loadSession.quickIdLoad(val);
+              ref.watch(sessionProvider.notifier).getMember();
               Navigator.pushNamed(context, '/memberSchedule');
             } else {
               //toast
@@ -95,31 +100,39 @@ class _LoginState extends State<Login> {
       ],
     );
 
-    return Scaffold(
-      body: Center(
-        child: Container(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                pageTitle,
-                emailForm,
-                passwordForm,
-                loginBtn,
-                registerLink,
-              ],
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    if (ref.watch(sessionProvider) == null) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  pageTitle,
+                  emailForm,
+                  passwordForm,
+                  loginBtn,
+                  registerLink,
+                ],
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+              ),
             ),
+            color: Colors.white,
+            width: isMobile(context)
+                ? percentWidth(context, 0.8)
+                : percentWidth(context, 0.4),
+            padding: const EdgeInsets.all(30),
           ),
-          color: Colors.white,
-          width: isMobile(context)
-              ? percentWidth(context, 0.8)
-              : percentWidth(context, 0.4),
-          padding: const EdgeInsets.all(30),
         ),
-      ),
-      backgroundColor: lightBlue(),
-    );
+        backgroundColor: lightBlue(),
+      );
+    }
+
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      Navigator.of(context).pushReplacementNamed("/memberSchedule");
+    });
+
+    return const Scaffold();
   }
 }

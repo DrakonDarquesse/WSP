@@ -36,30 +36,34 @@ class ListTileWidget extends StatelessWidget {
             ? Text(DateFormat('yMd').format(dateTime!))
             : Text(role!.name),
         subtitle: Text(event),
-        trailing: Row(children: [
-          if (trailing[0].isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: MaterialButton(
+        trailing: Wrap(
+          children: [
+            if (trailing.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: MaterialButton(
+                  child: Text(
+                    trailing[0]['text'],
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  color: yellow(),
+                  minWidth: 0,
+                  onPressed: trailing[0]['onPressed'],
+                ),
+              ),
+            if (trailing.length > 1)
+              MaterialButton(
+                onPressed: trailing[1]['onPressed'],
                 child: Text(
-                  trailing[0]['text'],
+                  trailing[1]['text'],
                 ),
                 padding: const EdgeInsets.all(16),
-                color: yellow(),
+                color: lightBlue(),
                 minWidth: 0,
-                onPressed: trailing[0]['onPressed'],
-              ),
-            ),
-          MaterialButton(
-            onPressed: trailing[1]['onPressed'],
-            child: Text(
-              trailing[1]['text'],
-            ),
-            padding: const EdgeInsets.all(16),
-            color: lightBlue(),
-            minWidth: 0,
-          )
-        ], mainAxisSize: MainAxisSize.min),
+              )
+          ],
+          spacing: 10,
+        ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       margin: const EdgeInsets.all(10),

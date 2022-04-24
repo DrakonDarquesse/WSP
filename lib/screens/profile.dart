@@ -5,6 +5,7 @@ import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
 import 'package:app/utils/size.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,6 +18,7 @@ class Profile extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     Member? member = ref.watch(sessionProvider);
     return Scaffold(
+      appBar: const CustomAppBar(text: 'Profile'),
       body: Center(
         child: member == null
             ? const CircularProgressIndicator()
