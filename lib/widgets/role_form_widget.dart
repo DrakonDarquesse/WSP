@@ -20,9 +20,9 @@ class _RoleFormWidgetState extends ConsumerState<RoleFormWidget> {
   late final Role _role;
 
   List<Color> currentColors = [
-    Colors.amber,
-    Colors.yellow,
-    Colors.green,
+    Colors.yellow.shade600,
+    Colors.lime.shade600,
+    Colors.green.shade600,
     Colors.teal,
     Colors.blue,
     Colors.indigo,
@@ -68,6 +68,7 @@ class _RoleFormWidgetState extends ConsumerState<RoleFormWidget> {
             _changeRoleName(value!);
           },
           initialValue: _role.name,
+          readOnly: ref.watch(sessionProvider.notifier).role != 'admin',
         ),
         Container(
           child: TextFormField(
@@ -86,27 +87,30 @@ class _RoleFormWidgetState extends ConsumerState<RoleFormWidget> {
               _changeRoleTask(value!);
             },
             initialValue: _role.task,
+            readOnly: ref.watch(sessionProvider.notifier).role != 'admin',
           ),
           constraints: const BoxConstraints(maxHeight: 150),
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
         ),
-        TextWidget(text: [
-          TextSpan(
-            text: 'Colour',
-            style: Theme.of(context).textTheme.subtitle1,
-          )
-        ]),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 60),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BlockPicker(
-              pickerColor: _role.color,
-              onColorChanged: _changeColor,
-              availableColors: currentColors,
+        if (ref.watch(sessionProvider.notifier).role == 'admin') ...[
+          TextWidget(text: [
+            TextSpan(
+              text: 'Colour',
+              style: Theme.of(context).textTheme.subtitle1,
+            )
+          ]),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 60),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: BlockPicker(
+                pickerColor: _role.color,
+                onColorChanged: _changeColor,
+                availableColors: currentColors,
+              ),
             ),
           ),
-        ),
+        ]
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
     );

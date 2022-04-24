@@ -1,6 +1,7 @@
 import 'package:app/provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,13 +82,13 @@ class AdminMemberList extends ConsumerWidget {
                       ? Icons.notifications_outlined
                       : Icons.notifications_off_outlined,
                   size: 20,
-                  color: members[val].isActive ? Colors.green : red(),
+                  color: members[val].isActive ? safe() : red(),
                 ),
               ),
               alignment: PlaceholderAlignment.top,
             ),
             TextSpan(
-              text: members[val].isActive ? 'Active' : 'Inactive',
+              text: members[val].getIsActive(),
             ),
           ],
           compact: isMobile(context) ? true : false,
@@ -95,16 +96,16 @@ class AdminMemberList extends ConsumerWidget {
         Expanded(
           flex: isMobile(context) ? 0 : 1,
           child: Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: isMobile(context) ? 0 : 16),
+            padding: EdgeInsets.symmetric(
+                horizontal: isMobile(context) ? 0 : 16, vertical: 10),
             child: Wrap(
               children: members[val].roles.map<Chip>((role) {
                 return Chip(
                   avatar: CircleAvatar(
                     backgroundColor: role.color,
                     child: Text(
-                      'A',
-                      style: TextStyle(color: lightBlue()),
+                      role.name[0].toUpperCase(),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   label: Text(role.name),
@@ -132,9 +133,8 @@ class AdminMemberList extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Members'),
-        backgroundColor: blue(),
+      appBar: const CustomAppBar(
+        text: 'Members',
       ),
       body: isMobile(context)
           ? Center(

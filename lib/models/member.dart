@@ -1,3 +1,4 @@
+import 'package:app/models/blocked_date.dart';
 import 'package:app/models/role.dart';
 
 class Member {
@@ -6,7 +7,7 @@ class Member {
   String name;
   bool isActive;
   List<Role> roles;
-  List<DateTime> blockedDates;
+  List<BlockedDate> blockedDates;
 
   String getIsActive() {
     if (isActive) {
@@ -24,11 +25,23 @@ class Member {
     this.id,
   });
 
+  Member.empty({
+    this.blockedDates = const [],
+    this.name = '',
+    this.email = '',
+    this.isActive = true,
+    this.roles = const [],
+  });
+
   factory Member.fromJson(Map<String, dynamic> json) {
-    List<dynamic> roles =
-        json['roles'].map((data) => Role.fromJson(data)).toList();
-    List<dynamic> blockedDates =
-        json['blockedDates'].map((data) => Role.fromJson(data)).toList();
+    List<dynamic> roles = json['roles'] != null
+        ? json['roles'].map((data) => Role.fromJson(data)).toList()
+        : [];
+    List<dynamic> blockedDates = json['blockedDates'] != null
+        ? json['blockedDates']
+            .map((data) => BlockedDate.fromJson(data))
+            .toList()
+        : [];
 
     return Member(
       id: json['id'],
@@ -36,7 +49,7 @@ class Member {
       email: json['email'],
       isActive: json['isEnabled'],
       roles: roles.cast<Role>(),
-      blockedDates: blockedDates.cast<DateTime>(),
+      blockedDates: blockedDates.cast<BlockedDate>(),
     );
   }
 
@@ -44,5 +57,13 @@ class Member {
         "id": id,
         "isEnabled": isActive,
         "roles": roles.map((r) => r.toJson()).toList(),
+        "blockedDates": blockedDates.map((r) => r.toJson()).toList(),
       };
+
+  @override
+  bool operator ==(Object other) {
+    return other is Member &&
+        name.toLowerCase() == other.name.toLowerCase() &&
+        email == other.email;
+  }
 }

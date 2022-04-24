@@ -1,18 +1,15 @@
-import 'package:app/models/role.dart';
+import 'package:app/models/member.dart';
+import 'package:app/network/member.dart';
 import 'package:app/network/role.dart';
+import 'package:app/network/roster.dart';
 import 'package:app/provider.dart';
+import 'package:app/provider/roster_provider.dart';
 import 'package:app/utils/enum.dart';
+import 'package:app/widgets/blocked_date_form.dart';
+import 'package:app/widgets/roster_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final roleProvider = StateProvider<Role>((ref) {
-  return Role(name: '', task: '');
-});
-
-final formKeyProvider = StateProvider<GlobalKey<FormState>>((ref) {
-  return GlobalKey<FormState>();
-});
 
 class AddDialogWidget extends ConsumerWidget {
   final String text;
@@ -24,6 +21,7 @@ class AddDialogWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final _formKey = GlobalKey<FormState>();
     List<Widget> roleWidgets = [
       TextWidget(
         text: [
@@ -33,27 +31,48 @@ class AddDialogWidget extends ConsumerWidget {
           )
         ],
       ),
-      ref.watch(modelProvider) == Model.role
-          ? RoleFormWidget(
-              callback: (val) {
-                ref.watch(roleProvider.notifier).state = val;
-              },
-            )
-          : RoleFormWidget(callback: (val) {
-              ref.watch(roleProvider.notifier).state = val;
-            }),
+      if (ref.watch(modelProvider) == Model.role)
+        RoleFormWidget(callback: (val) {
+          ref.watch(roleProvider.notifier).assign(val);
+        }),
+      if (ref.watch(modelProvider) == Model.roster) const RosterFormWidget(),
+      if (ref.watch(modelProvider) == Model.blockedDate)
+        const BlockedDateForm(),
       const Divider(),
       ButtonWidget(
         text: text,
         callback: () async {
-          if (ref.watch(formKeyProvider).currentState!.validate()) {
-            ref.watch(formKeyProvider).currentState!.save();
-            ref.watch(modelProvider) == Model.role
-                ? addRole(ref.watch(roleProvider)).then((value) {
-                    ref.read(roleListProvider.notifier).load();
-                    Navigator.of(context, rootNavigator: true).pop();
-                  })
-                : addRole(ref.watch(roleProvider));
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            if (ref.watch(modelProvider) == Model.role) {
+              await addRole(ref.watch(roleProvider)).then((value) {
+                ref.read(roleListProvider.notifier).load();
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+            }
+            if (ref.watch(modelProvider) == Model.roster) {
+              await addRoster(ref.read(rosterProvider)).then((value) {
+                ref.read(rosterListProvider.notifier).load();
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+            }
+            if (ref.watch(modelProvider) == Model.blockedDate) {
+              Member newMember = Member(
+                  id: ref.read(sessionProvider)!.id,
+                  email: ref.read(sessionProvider)!.email,
+                  name: ref.read(sessionProvider)!.name,
+                  roles: ref.read(sessionProvider)!.roles,
+                  blockedDates: [
+                    ...ref.read(sessionProvider)!.blockedDates,
+                    ref.read(blockedDateProvider)
+                  ]);
+
+              await editMember(newMember).then((value) {
+                ref.read(sessionProvider.notifier).getMember();
+                ref.read(memberListProvider.notifier).load();
+                Navigator.of(context, rootNavigator: true).pop();
+              });
+            }
           }
         },
       ),
@@ -61,7 +80,7 @@ class AddDialogWidget extends ConsumerWidget {
     return Dialog(
       child: Container(
         child: Form(
-          key: ref.watch(formKeyProvider),
+          key: _formKey,
           child: Column(
             children: roleWidgets,
             mainAxisSize: MainAxisSize.min,

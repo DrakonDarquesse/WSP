@@ -24,7 +24,7 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
       if (select) {
         _member.roles.add(role);
       } else {
-        _member.roles.removeWhere((r) => r.name == role.name);
+        _member.roles.removeWhere((r) => r == role);
       }
 
       if (widget.callback != null) {
@@ -44,6 +44,22 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
     final _roles = ref.watch(roleListProvider);
     return Column(
       children: [
+        TextWidget(
+          text: [
+            TextSpan(
+              text: _member.name,
+              style: Theme.of(context).textTheme.headline6,
+            )
+          ],
+        ),
+        TextWidget(
+          text: [
+            TextSpan(
+              text: _member.email,
+              style: Theme.of(context).textTheme.subtitle1,
+            )
+          ],
+        ),
         TextWidget(text: [
           TextSpan(
             text: 'Role',
@@ -53,38 +69,36 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _roles.isNotEmpty
-              ? Wrap(
-                  children: _roles.map<FilterChip>((role) {
-                    return FilterChip(
-                      avatar: CircleAvatar(
-                        backgroundColor: role.color,
-                        child: Text(
-                          role.name[0].toUpperCase(),
-                          style: const TextStyle(color: Colors.white),
+              ? AbsorbPointer(
+                  child: Wrap(
+                    children: _roles.map<FilterChip>((role) {
+                      return FilterChip(
+                        avatar: CircleAvatar(
+                          backgroundColor: role.color,
+                          child: Text(
+                            role.name[0].toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
-                      ),
-                      label: Text(role.name),
-                      backgroundColor: role.color.withOpacity(0.15),
-                      onSelected: (bool select) {
-                        _changeRoles(role, select);
-                      },
-                      selectedColor: yellow().withOpacity(0.5),
-                      selected: widget.member.roles
-                          .where((r) => r.name == role.name)
-                          .toList()
-                          .isNotEmpty,
-                    );
-                  }).toList(),
-                  runSpacing: 8,
-                  spacing: 10,
+                        label: Text(role.name),
+                        backgroundColor: role.color.withOpacity(0.15),
+                        onSelected: (bool select) {
+                          _changeRoles(role, select);
+                        },
+                        selectedColor: yellow(),
+                        selected: widget.member.roles
+                            .where((r) => r == role)
+                            .toList()
+                            .isNotEmpty,
+                      );
+                    }).toList(),
+                    runSpacing: 8,
+                    spacing: 10,
+                  ),
+                  absorbing:
+                      ref.watch(sessionProvider.notifier).role != 'admin',
                 )
               : const Center(child: CircularProgressIndicator()),
-        ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 60),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-          ),
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,

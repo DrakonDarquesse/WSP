@@ -1,9 +1,16 @@
+import 'package:app/models/role_deck.dart';
+import 'package:app/models/role_member.dart';
 import 'package:app/provider.dart';
+import 'package:app/provider/role_deck_provider.dart';
+import 'package:app/provider/roster_provider.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:app/utils/enum.dart';
 import 'package:app/widgets/all.dart';
+import 'package:app/widgets/role_deck_form.dart';
+import 'package:app/widgets/role_member_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/models/duty_roster.dart';
 
 class TableWidget extends ConsumerWidget {
   final List dataList;
@@ -29,11 +36,40 @@ class TableWidget extends ConsumerWidget {
               onTap: () {
                 ref.watch(modeProvider.notifier).state = Mode.edit;
                 if (index != 0) {
+                  if (dataList[index - 1] is DutyRoster) {
+                    ref.watch(rosterProvider.notifier).state =
+                        dataList[index - 1];
+                  }
+                  if (dataList[index - 1] is RoleMember) {
+                    RoleMember rm = dataList[index - 1] as RoleMember;
+                    ref.watch(tempRoleMemberProvider.notifier).state =
+                        dataList[index - 1];
+                    ref.watch(roleProvider.notifier).assign(rm.role);
+                    if (ref.watch(sessionProvider.notifier).role != 'admin') {
+                      return;
+                    }
+                  }
+                  if (dataList[index - 1] is RoleDeck) {
+                    RoleDeck rd = dataList[index - 1] as RoleDeck;
+                    ref.watch(selectedRolesProvider.notifier).state = rd.roles;
+                    ref.watch(titleProvider.notifier).state = rd.title;
+                  }
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
+                      if (dataList[index - 1] is RoleMember) {
+                        return const RoleMemberForm();
+                      }
+                      if (dataList[index - 1] is RoleDeck) {
+                        return RoleDeckForm(
+                          roledeck: dataList[index - 1],
+                        );
+                      }
                       return EditDialogWidget(
-                        text: 'Edit',
+                        text:
+                            ref.watch(sessionProvider.notifier).role == 'admin'
+                                ? 'Edit'
+                                : 'View',
                         model: dataList[index - 1],
                       );
                     },
@@ -59,7 +95,8 @@ class TableWidget extends ConsumerWidget {
                         : CrossAxisAlignment.center,
                   ),
                 ),
-                cursor: SystemMouseCursors.click,
+                cursor:
+                    index != 0 ? SystemMouseCursors.click : MouseCursor.defer,
               ),
             );
           },
@@ -77,25 +114,6 @@ class TableWidget extends ConsumerWidget {
       ),
     ];
 
-    if (ref.watch(modelProvider) == Model.role) {
-      widgets.insert(
-          0,
-          ButtonWidget(
-            text: 'Add',
-            callback: () {
-              ref.watch(modeProvider.notifier).state = Mode.add;
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const AddDialogWidget(
-                    text: 'Add Role',
-                  );
-                },
-              );
-            },
-            icon: Icons.add_circle_outline_rounded,
-          ));
-    }
     return Column(
       children: widgets,
       crossAxisAlignment: CrossAxisAlignment.end,
