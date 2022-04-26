@@ -60,6 +60,7 @@ class _RegisterState extends ConsumerState<Register> {
       info: 'Email',
       validator: (String? value) {
         return Validator.checkEmpty(value) ?? Validator.validateEmail(value);
+
       },
       inputType: TextInputType.emailAddress,
       icon: Icons.email_outlined,
@@ -72,6 +73,7 @@ class _RegisterState extends ConsumerState<Register> {
       info: 'Name',
       validator: (String? value) {
         return Validator.checkEmpty(value);
+
       },
       inputType: TextInputType.name,
       icon: Icons.account_box_rounded,

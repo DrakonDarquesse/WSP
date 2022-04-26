@@ -15,11 +15,4 @@ const messaging = firebase.messaging();
 // Optional:
 messaging.onBackgroundMessage((m) => {
   console.log("onBackgroundMessage", m);
-  const notificationTitle = m.notification.title;
-  const notificationOptions = {
-    body: m.notification.body,
-  };
-
-  self.registration.showNotification(notificationTitle,
-    notificationOptions);
 });
