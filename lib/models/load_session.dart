@@ -1,21 +1,46 @@
 import 'package:app/models/member.dart';
+import 'package:app/network/auth.dart';
 import 'package:app/network/member.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadSession {
   String? signedInMemberId;
   Member? member;
   String? role;
+  dynamic data;
 
-  // this will succeed or throw an error
-  Future<void> loadId() async {
-    final prefs = await SharedPreferences.getInstance();
-    signedInMemberId = prefs.getString('token');
+  void quickIdLoad(String id) {
+    signedInMemberId = id;
+    loadMember();
   }
 
   Future<void> loadMember() async {
-    dynamic data = await getOneMember(signedInMemberId!);
-    member = Member.fromJson(data);
-    role = data['role'];
+    await loadMemberIfSignedIn();
+    print('hmm');
+    if (signedInMemberId != null) {
+      print('hmm2');
+      try {
+        data = await getOneMember(signedInMemberId!);
+      } finally {
+        member = Member.fromJson(data);
+        role = data['role'];
+      }
+    }
+  }
+
+  Future<void> loadMemberIfSignedIn() async {
+    try {
+      data = await checkAuth();
+    } finally {
+      if (data != null) {
+        member = Member.fromJson(data);
+        role = data['role'];
+      }
+    }
+  }
+
+  Future<void> clearSession() async {
+    member = null;
+    role = null;
+    signedInMemberId = null;
   }
 }

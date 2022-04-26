@@ -31,6 +31,7 @@ final rosterListProvider =
     StateNotifierProvider<RosterList, List<DutyRoster>>((ref) {
   final loadList = ref.watch(loadListProvider);
   RosterList rosterList = RosterList(loadList: loadList);
+  // if (ref.watch(sessionProvider.notifier).signedIn)
   rosterList.load();
   return rosterList;
 });
@@ -54,6 +55,6 @@ final modelProvider = StateProvider<Model>((ref) => Model.role);
 final sessionProvider = StateNotifierProvider<UserSession, Member?>((ref) {
   final loadSession = ref.watch(loadSessionProvider);
   UserSession userSession = UserSession(loadSession: loadSession);
-  userSession.getId();
+  userSession.getMember();
   return userSession;
 });

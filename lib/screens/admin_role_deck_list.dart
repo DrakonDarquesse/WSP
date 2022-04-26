@@ -4,6 +4,7 @@ import 'package:app/provider.dart';
 import 'package:app/utils/adaptive.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
+import 'package:app/widgets/custom_app_bar.dart';
 import 'package:app/widgets/role_deck_form.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/all.dart';
@@ -90,28 +91,28 @@ class AdminRoleDeckList extends ConsumerWidget {
     }
 
     List<Widget> widgets = [
-      ButtonWidget(
-        text: 'Add',
-        icon: Icons.add_circle_outline_rounded,
-        callback: () {
-          ref.watch(modeProvider.notifier).state = Mode.add;
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const RoleDeckForm(
-                roledeck: null,
-              );
-            },
-          );
-        },
-      ),
+      if (ref.watch(sessionProvider.notifier).role == 'admin')
+        ButtonWidget(
+          text: 'Add',
+          icon: Icons.add_circle_outline_rounded,
+          callback: () {
+            ref.watch(modeProvider.notifier).state = Mode.add;
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const RoleDeckForm(
+                  roledeck: null,
+                );
+              },
+            );
+          },
+        ),
       getTableWidget(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Roster Template'),
-        backgroundColor: blue(),
+      appBar: const CustomAppBar(
+        text: 'Roster Template',
       ),
       body: isMobile(context)
           ? Center(

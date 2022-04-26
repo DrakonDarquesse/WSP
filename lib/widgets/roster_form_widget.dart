@@ -188,7 +188,7 @@ class _RosterFormWidgetState extends ConsumerState<RosterFormWidget> {
             _changeRosterTitle(value!);
           },
           validator: (String? value) {
-            return checkEmpty(value);
+            return Validator.checkEmpty(value);
           },
           initialValue: roster.title,
           readOnly: ref.watch(sessionProvider.notifier).role != 'admin',

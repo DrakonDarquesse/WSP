@@ -1,4 +1,3 @@
-import 'package:app/provider.dart';
 import 'package:app/routes.dart';
 import 'package:app/utils/enum.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,7 @@ class NavBar extends ConsumerWidget {
   const NavBar({Key? key}) : super(key: key);
 
   int getIndex(String route) {
-    return navRoutes.indexOf(route);
+    return navRoutes[route]!;
   }
 
   @override
@@ -20,22 +19,19 @@ class NavBar extends ConsumerWidget {
     void _onItemTapped(int index) {
       switch (index) {
         case 0:
-          Navigator.popAndPushNamed(context, '/memberSchedule');
+          Navigator.pushNamed(context, '/memberSchedule');
           break;
         case 1:
-          Navigator.popAndPushNamed(context, '/');
+          Navigator.pushNamed(context, '/profile');
           break;
         case 2:
-          Navigator.pushReplacementNamed(context, '/adminRoleList');
+          Navigator.pushNamed(context, '/role');
           break;
         case 3:
-          Navigator.pushReplacementNamed(context, '/adminMemberList');
+          Navigator.pushNamed(context, '/member');
           break;
         case 4:
-          Navigator.pushNamed(context, '/adminRosterList');
-          break;
-        case 5:
-          Navigator.pushNamed(context, '/');
+          Navigator.pushNamed(context, '/roster');
           break;
       }
     }
@@ -48,8 +44,8 @@ class NavBar extends ConsumerWidget {
                 label: Nav.schedule.displayText,
               ),
               BottomNavigationBarItem(
-                icon: Nav.roster.displayIcon,
-                label: Nav.roster.displayText,
+                icon: Nav.profile.displayIcon,
+                label: Nav.profile.displayText,
               ),
               BottomNavigationBarItem(
                 icon: Nav.roles.displayIcon,
@@ -62,7 +58,7 @@ class NavBar extends ConsumerWidget {
               BottomNavigationBarItem(
                 icon: Nav.roster.displayIcon,
                 label: Nav.roster.displayText,
-              )
+              ),
             ],
             showUnselectedLabels: false,
             selectedItemColor: black(),
@@ -81,8 +77,8 @@ class NavBar extends ConsumerWidget {
                 label: Text(Nav.schedule.displayText),
               ),
               NavigationRailDestination(
-                icon: Nav.roster.displayIcon,
-                label: Text(Nav.roster.displayText),
+                icon: Nav.profile.displayIcon,
+                label: Text(Nav.profile.displayText),
               ),
               NavigationRailDestination(
                 icon: Nav.roles.displayIcon,
@@ -95,7 +91,7 @@ class NavBar extends ConsumerWidget {
               NavigationRailDestination(
                 icon: Nav.roster.displayIcon,
                 label: Text(Nav.roster.displayText),
-              )
+              ),
             ],
             backgroundColor: lightBlue(),
             unselectedIconTheme: IconThemeData(color: blue()),

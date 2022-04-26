@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 enum Mode { edit, read, add }
 enum Model { role, member, roster, roleMember, blockedDate }
-enum Nav { roster, schedule, members, roles }
-enum Status { accepted, pending, rejected }
+enum Nav { roster, schedule, members, roles, profile, roleDeck }
+enum Status {
+  accepted,
+  pending,
+  rejected,
+  unattended,
+  changeTarget,
+  changeSource,
+  change,
+}
 
 extension NavExtension on Nav {
   String get displayText {
@@ -16,6 +24,10 @@ extension NavExtension on Nav {
         return "Roles";
       case Nav.members:
         return "Member";
+      case Nav.profile:
+        return "Profile";
+      case Nav.roleDeck:
+        return "Role Set";
     }
   }
 
@@ -28,7 +40,11 @@ extension NavExtension on Nav {
       case Nav.roles:
         return const Icon(Icons.tag);
       case Nav.members:
-        return const Icon(Icons.person);
+        return const Icon(Icons.group);
+      case Nav.profile:
+        return const Icon(Icons.account_circle_outlined);
+      case Nav.roleDeck:
+        return const Icon(Icons.view_column_outlined);
     }
   }
 }
