@@ -58,3 +58,10 @@ class Validator {
     return null;
   }
 }
+
+String? checkDuplicate(List<Role> roleList, String name) {
+  if (roleList.every((r) => r.name == name)) {
+    return 'Already have this role, please use another name';
+  }
+  return null;
+}
