@@ -95,8 +95,10 @@ class _MemberFormWidgetState extends ConsumerState<MemberFormWidget> {
                     runSpacing: 8,
                     spacing: 10,
                   ),
-                  absorbing:
-                      ref.watch(sessionProvider.notifier).role != 'admin',
+                  absorbing: !(ref.watch(sessionProvider.notifier).role ==
+                          'admin' ||
+                      (ref.watch(sessionProvider.notifier).role == 'member' &&
+                          _member == ref.watch(sessionProvider))),
                 )
               : const Center(child: CircularProgressIndicator()),
         ),

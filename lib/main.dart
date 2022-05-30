@@ -1,6 +1,7 @@
 import 'package:app/navigator_middleware.dart';
 import 'package:app/network/message.dart';
 import 'package:app/provider.dart';
+import 'package:app/provider/logout_provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

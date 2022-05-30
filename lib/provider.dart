@@ -1,4 +1,6 @@
 import 'package:app/models/duty_roster.dart';
+import 'package:app/models/exchange.dart';
+import 'package:app/models/exchange_list.dart';
 import 'package:app/models/load_session.dart';
 import 'package:app/models/member.dart';
 import 'package:app/models/member_list.dart';
@@ -31,7 +33,6 @@ final rosterListProvider =
     StateNotifierProvider<RosterList, List<DutyRoster>>((ref) {
   final loadList = ref.watch(loadListProvider);
   RosterList rosterList = RosterList(loadList: loadList);
-  // if (ref.watch(sessionProvider.notifier).signedIn)
   rosterList.load();
   return rosterList;
 });
@@ -40,6 +41,14 @@ final roleDeckListProvider =
     StateNotifierProvider<RoleDeckList, List<RoleDeck>>((ref) {
   final loadList = ref.watch(loadListProvider);
   RoleDeckList roleDeckList = RoleDeckList(loadList: loadList);
+  roleDeckList.load();
+  return roleDeckList;
+});
+
+final exchangeListProvider =
+    StateNotifierProvider<ExchangeList, List<Exchange>>((ref) {
+  final loadList = ref.watch(loadListProvider);
+  ExchangeList roleDeckList = ExchangeList(loadList: loadList);
   roleDeckList.load();
   return roleDeckList;
 });

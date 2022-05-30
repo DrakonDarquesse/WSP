@@ -30,7 +30,7 @@ Future<void> sendMessage(String id) async {
   const String api_url = 'https://afternoon-shore-55342.herokuapp.com/sendMsg';
   // const String api_url = 'http://localhost:3000/editMember';
 
-  Map<String, dynamic> body = {'id': id};
+  Map<String, dynamic> body = {'receiver': id};
 
   print(body);
 
@@ -49,16 +49,28 @@ Future<void> sendMessage(String id) async {
   }
 }
 
-void notification() async {
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
+Future<void> sendMessages(List<Map<String, dynamic>> messages) async {
+  const String api_url =
+      'https://afternoon-shore-55342.herokuapp.com/sendMessages';
+  // const String api_url = 'http://localhost:3000/editMember';
+
+  Map<String, dynamic> body = {'messages': messages};
+
+  print(body);
+
+  Response response = await post(
+    Uri.parse(api_url),
+    body: jsonEncode(body),
+    headers: {
+      "content-type": "application/json",
+    },
   );
+
+  if (response.statusCode == 200) {
+    // something
+  } else {
+    throw Exception('Failed to something');
+  }
 }
 
 void token() async {

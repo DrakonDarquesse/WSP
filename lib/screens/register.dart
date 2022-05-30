@@ -9,6 +9,7 @@ import 'package:app/utils/validate.dart';
 import 'package:app/network/auth.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Register extends ConsumerStatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -128,10 +129,21 @@ class _RegisterState extends ConsumerState<Register> {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           await register(_email, _password, _username).then((val) {
-            if (val == null) {
-              Navigator.pushNamed(context, '/home');
+            print(val);
+            if (val != '') {
+              Navigator.pushNamed(context, '/memberSchedule');
             } else {
-              //toast
+              Fluttertoast.showToast(
+                msg: 'Account already exists',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 3,
+                backgroundColor: red(),
+                webBgColor: '#888',
+                webPosition: 'center',
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
             }
           });
         }

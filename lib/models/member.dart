@@ -19,7 +19,7 @@ class Member {
   Member({
     required this.email,
     required this.name,
-    this.isActive = true,
+    this.isActive = false,
     required this.roles,
     required this.blockedDates,
     this.id,
@@ -29,11 +29,14 @@ class Member {
     this.blockedDates = const [],
     this.name = '',
     this.email = '',
-    this.isActive = true,
+    this.isActive = false,
     this.roles = const [],
   });
 
   factory Member.fromJson(Map<String, dynamic> json) {
+    if (json.isEmpty) {
+      return Member.empty();
+    }
     List<dynamic> roles = json['roles'] != null
         ? json['roles'].map((data) => Role.fromJson(data)).toList()
         : [];

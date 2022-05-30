@@ -33,12 +33,8 @@ class RoleMember {
   }
 
   Map<String, dynamic> toJson() => {
-        "role": role,
-        "member": {
-          "name": member.name,
-          "email": member.email,
-          "isEnabled": member.isActive,
-        },
+        "role": role.id,
+        "member": member.id,
         "status": status.toString(),
         "link": link,
         "src": src?.toJson(),

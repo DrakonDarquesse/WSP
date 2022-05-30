@@ -9,7 +9,10 @@ Future<List<DutyRoster>> fetchRoster() async {
     Uri.parse(api_url),
   );
 
+  print('obj');
+
   if (response.statusCode == 200) {
+    print('object');
     List<dynamic> roster = jsonDecode(response.body)
         .map((data) => DutyRoster.fromJson(data))
         .toList();

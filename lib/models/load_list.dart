@@ -1,7 +1,9 @@
 import 'package:app/models/duty_roster.dart';
+import 'package:app/models/exchange.dart';
 import 'package:app/models/member.dart';
 import 'package:app/models/role.dart';
 import 'package:app/models/role_deck.dart';
+import 'package:app/network/exchange.dart';
 import 'package:app/network/member.dart';
 import 'package:app/network/role.dart';
 import 'package:app/network/role_deck.dart';
@@ -12,6 +14,7 @@ class LoadList {
   List<Member> members = [];
   List<DutyRoster> rosters = [];
   List<RoleDeck> roleDecks = [];
+  List<Exchange> exchanges = [];
 
   // this will succeed or throw an error
   Future<void> loadRole() async {
@@ -28,5 +31,9 @@ class LoadList {
 
   Future<void> loadRoleDeck() async {
     roleDecks = await fetchRoleDeck();
+  }
+
+  Future<void> loadExchange() async {
+    exchanges = await fetchExchange();
   }
 }

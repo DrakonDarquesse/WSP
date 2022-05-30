@@ -1,4 +1,5 @@
 import 'package:app/screens/accepted_duty.dart';
+import 'package:app/screens/pending_exchange.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _MemberScheduleState extends State<MemberSchedule>
     Tab(text: 'Blocked Dates'),
     Tab(text: 'Pending'),
     Tab(text: 'Accepted'),
+    Tab(text: 'Exchange'),
   ];
 
   @override
@@ -56,6 +58,7 @@ class _MemberScheduleState extends State<MemberSchedule>
                 BlockedDates(),
                 PendingRequest(),
                 AcceptedDuty(),
+                PendingExchange(),
               ],
             )
           : Row(
@@ -120,6 +123,20 @@ class _MemberScheduleState extends State<MemberSchedule>
                         alignment: TextAlign.center,
                       ),
                       Expanded(child: AcceptedDuty()),
+                    ],
+                  ),
+                  flex: 1,
+                ),
+                Expanded(
+                  child: Column(
+                    children: const [
+                      TextWidget(
+                        text: [
+                          TextSpan(text: 'Exchange'),
+                        ],
+                        alignment: TextAlign.center,
+                      ),
+                      Expanded(child: PendingExchange()),
                     ],
                   ),
                   flex: 1,

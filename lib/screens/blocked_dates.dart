@@ -1,6 +1,5 @@
 import 'package:app/models/member.dart';
 import 'package:app/network/member.dart';
-import 'package:app/network/message.dart';
 import 'package:app/provider.dart';
 import 'package:app/widgets/list_tile_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +17,6 @@ class BlockedDates extends ConsumerWidget {
     final Member? member = ref.watch(sessionProvider);
     if (member == null) {
       return const Center(child: CircularProgressIndicator());
-    } else {
-      sendMessage(member.id!);
     }
     return ListView.builder(
       itemBuilder: (context, index) {

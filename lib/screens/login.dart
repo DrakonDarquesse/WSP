@@ -9,6 +9,7 @@ import 'package:app/utils/colours.dart';
 import 'package:app/utils/validate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends ConsumerStatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -47,13 +48,22 @@ class _LoginState extends ConsumerState<Login> {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           await login(_email, _password).then((val) {
-            if (val != '1' && val != '2') {
+            if (val != '') {
               ref.watch(sessionProvider.notifier).loadSession.quickIdLoad(val);
               ref.watch(sessionProvider.notifier).getMember();
               Navigator.pushNamed(context, '/memberSchedule');
             } else {
-              //toast
-              print(val);
+              Fluttertoast.showToast(
+                msg: 'Incorrect username or password',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 3,
+                backgroundColor: red(),
+                webBgColor: '#888',
+                webPosition: 'center',
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
             }
           });
         }

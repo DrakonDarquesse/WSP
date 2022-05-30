@@ -1,13 +1,17 @@
 import 'package:app/models/duty_roster.dart';
+import 'package:app/models/member.dart';
 import 'package:app/models/role.dart';
 import 'package:app/models/role_member.dart';
+import 'package:app/network/message.dart';
 import 'package:app/provider.dart';
 import 'package:app/provider/roster_provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
+import 'package:app/utils/make_mesaage.dart';
 import 'package:app/utils/organize_roster.dart';
 import 'package:app/widgets/all.dart';
 import 'package:app/widgets/custom_app_bar.dart';
+import 'package:app/widgets/mobile_roster.dart';
 import 'package:app/widgets/volunteer_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/adaptive.dart';
@@ -25,6 +29,33 @@ class AdminRosterList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final roles = ref.watch(roleListProvider);
     final rosters = ref.watch(rosterListProvider);
+
+    Widget notifyBtn = ButtonWidget(
+      text: 'Notify Update',
+      callback: () {
+        Member? m = ref.read(sessionProvider);
+        sendMessage(m!.id!);
+      },
+      icon: Icons.send,
+    );
+
+    Widget addBtn = ButtonWidget(
+      text: 'Add',
+      callback: () {
+        ref.watch(modeProvider.notifier).state = Mode.add;
+        ref.watch(rosterProvider.notifier).state =
+            DutyRoster(date: DateTime.now(), title: "", roleMembers: []);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddDialogWidget(
+              text: 'Add ${ref.read(modelProvider).name}',
+            );
+          },
+        );
+      },
+      icon: Icons.add_circle_outline_rounded,
+    );
 
     List<Widget> Function(int) getWidgetList(List<DutyRoster> aRoster) {
       Set<Role> roleOrders = aRoster.first.getRoles();
@@ -107,6 +138,20 @@ class AdminRosterList extends ConsumerWidget {
               ),
             );
           }),
+          if (ref.watch(sessionProvider.notifier).role == 'admin')
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
+              child: MaterialButton(
+                child: const Text('Remind'),
+                onPressed: () {
+                  sendMessages(messageFactory(aRoster[val]));
+                },
+                minWidth: 0,
+                padding: const EdgeInsets.all(16),
+                color: yellow(),
+              ),
+            )
         ];
       }
 
@@ -123,14 +168,19 @@ class AdminRosterList extends ConsumerWidget {
       return TableWidget(
         dataList: e,
         widgetList: getWidgetList(e),
-        header: header(e.first.getRoles()),
+        header: header(e.first.getRoles(),
+            ref.watch(sessionProvider.notifier).role == 'admin'),
       );
     }).toList();
+
+    MobileRoster mobiletables = MobileRoster(
+      dataList: rosters,
+    );
 
     List<Widget> getTableWidget() {
       return tables.isEmpty
           ? [const Center(child: CircularProgressIndicator())]
-          : tables;
+          : (isMobile(context) ? [mobiletables] : tables);
     }
 
     return Scaffold(
@@ -139,7 +189,22 @@ class AdminRosterList extends ConsumerWidget {
       ),
       body: isMobile(context)
           ? Center(
-              child: Column(children: [...getTableWidget()]),
+              child: Column(
+                children: [
+                  if (ref.watch(sessionProvider.notifier).role == 'admin')
+                    Row(
+                      children: [addBtn, notifyBtn],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  Expanded(
+                      child: Center(
+                    child: SingleChildScrollView(
+                      child: getTableWidget()[0],
+                    ),
+                  ))
+                ],
+                mainAxisSize: MainAxisSize.min,
+              ),
             )
           : Row(
               children: [
@@ -148,27 +213,15 @@ class AdminRosterList extends ConsumerWidget {
                   child: Column(
                     children: [
                       if (ref.watch(sessionProvider.notifier).role == 'admin')
-                        ButtonWidget(
-                          text: 'Add',
-                          callback: () {
-                            ref.watch(modeProvider.notifier).state = Mode.add;
-                            ref.watch(rosterProvider.notifier).state =
-                                DutyRoster(
-                                    date: DateTime.now(),
-                                    title: "",
-                                    roleMembers: []);
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AddDialogWidget(
-                                  text: 'Add ${ref.read(modelProvider).name}',
-                                );
-                              },
-                            );
-                          },
-                          icon: Icons.add_circle_outline_rounded,
+                        Row(
+                          children: [addBtn, notifyBtn],
+                          mainAxisAlignment: MainAxisAlignment.end,
                         ),
-                      ...getTableWidget(),
+                      Expanded(
+                        child: Center(
+                            child: SingleChildScrollView(
+                                child: Column(children: [...getTableWidget()]))),
+                      )
                     ],
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
