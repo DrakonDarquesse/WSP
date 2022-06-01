@@ -150,30 +150,64 @@ class _DialogWidgetState extends ConsumerState<EditDialogWidget> {
             }
           },
         ),
+        if (widget.model is! Member)
+          ButtonWidget(
+            text: 'Delete',
+            callback: () async {
+              if (widget.model is Role) {
+                await deleteRole(_role).then((value) {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  ref.read(roleListProvider.notifier).load();
+                });
+              }
+              if (widget.model is Member) {
+                await deleteMember(_member).then((value) {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  ref.read(memberListProvider.notifier).load();
+                });
+              }
+              if (widget.model is DutyRoster) {
+                await deleteRoster(ref.read(rosterProvider)).then((value) {
+                  ref.read(rosterListProvider.notifier).load();
+                  Navigator.of(context, rootNavigator: true).pop();
+                });
+              }
+            },
+            color: red(),
+          )
+      ],
+      if (ref.watch(sessionProvider.notifier).role == 'member' &&
+          widget.model is Member &&
+          ref.watch(sessionProvider) == widget.model) ...[
+        const Divider(),
         ButtonWidget(
-          text: 'Delete',
+          text: 'Save Change',
           callback: () async {
-            if (widget.model is Role) {
-              await deleteRole(_role).then((value) {
-                Navigator.of(context, rootNavigator: true).pop();
-                ref.read(roleListProvider.notifier).load();
-              });
-            }
-            if (widget.model is Member) {
-              await deleteMember(_member).then((value) {
-                Navigator.of(context, rootNavigator: true).pop();
-                ref.read(memberListProvider.notifier).load();
-              });
-            }
-            if (widget.model is DutyRoster) {
-              await deleteRoster(ref.read(rosterProvider)).then((value) {
-                ref.read(rosterListProvider.notifier).load();
-                Navigator.of(context, rootNavigator: true).pop();
-              });
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              if (widget.model is Role) {
+                await editRole(_role).then((value) {
+                  ref.read(roleListProvider.notifier).load();
+                  Navigator.of(context, rootNavigator: true).pop();
+                });
+              }
+              if (widget.model is Member) {
+                await editMember(_member).then((value) {
+                  ref.read(memberListProvider.notifier).load();
+                  ref.read(roleListProvider.notifier).load();
+                  ref.read(sessionProvider.notifier).getMember();
+                  Navigator.of(context, rootNavigator: true).pop();
+                });
+              }
+              if (widget.model is DutyRoster) {
+                await editRoster(ref.read(rosterProvider)).then((value) {
+                  ref.read(rosterListProvider.notifier).load();
+                  Navigator.of(context, rootNavigator: true).pop();
+                });
+              }
             }
           },
-          color: red(),
-        )
+        ),
       ]
     ];
     return Dialog(

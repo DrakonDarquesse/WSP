@@ -1,6 +1,7 @@
 import 'package:app/navigator_middleware.dart';
 import 'package:app/network/message.dart';
 import 'package:app/provider.dart';
+import 'package:app/provider/logout_provider.dart';
 import 'package:app/utils/colours.dart';
 import 'package:app/utils/enum.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,

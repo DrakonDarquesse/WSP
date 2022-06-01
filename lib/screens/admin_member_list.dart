@@ -129,7 +129,9 @@ class AdminMemberList extends ConsumerWidget {
     Widget getTableWidget() {
       return members.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : tableWidget;
+          : SingleChildScrollView(
+              child: tableWidget,
+            );
     }
 
     return Scaffold(
@@ -143,9 +145,7 @@ class AdminMemberList extends ConsumerWidget {
           : Row(
               children: [
                 const NavBar(),
-                Expanded(
-                  child: getTableWidget(),
-                ),
+                Expanded(child: Center(child: getTableWidget())),
               ],
               mainAxisSize: MainAxisSize.max,
             ),

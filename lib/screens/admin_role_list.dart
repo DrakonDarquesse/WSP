@@ -50,7 +50,9 @@ class AdminRoleList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final roles = ref.watch(roleListProvider);
+    final roles = ref.watch(sessionProvider.notifier).signedIn == true
+        ? ref.watch(roleListProvider)
+        : [];
     final members = ref.watch(memberListProvider);
 
     List<Widget> widgetList(val) {
@@ -134,12 +136,8 @@ class AdminRoleList extends ConsumerWidget {
     Widget getTableWidget() {
       return roles.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxHeight: percentHeight(context, 0.8)),
-              child: SingleChildScrollView(
-                child: tableWidget,
-              ),
+          : SingleChildScrollView(
+              child: tableWidget,
             );
     }
 
@@ -183,8 +181,9 @@ class AdminRoleList extends ConsumerWidget {
                     ],
                     mainAxisAlignment: MainAxisAlignment.end,
                   ),
-                Center(child: getTableWidget()),
+                Expanded(child: Center(child: getTableWidget())),
               ],
+              mainAxisAlignment: MainAxisAlignment.center,
             )
           : Row(
               children: [
@@ -200,13 +199,15 @@ class AdminRoleList extends ConsumerWidget {
                           ],
                           mainAxisAlignment: MainAxisAlignment.end,
                         ),
-                      getTableWidget(),
+                      Expanded(child: Center(child: getTableWidget())),
                     ],
                     crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
                   ),
                 ),
               ],
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
             ),
       bottomNavigationBar: isMobile(context) ? const NavBar() : null,
     );

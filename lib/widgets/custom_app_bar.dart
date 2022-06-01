@@ -1,9 +1,11 @@
 import 'package:app/network/auth.dart';
 import 'package:app/provider.dart';
+import 'package:app/screens/all.dart';
 import 'package:app/utils/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/provider/logout_provider.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String text;
@@ -18,13 +20,23 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    if (!ref.watch(sessionProvider.notifier).signedIn) {
+    if (ref.watch(sessionProvider) == null && !ref.watch(isLogout)) {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed("/login");
+        String route = ModalRoute.of(context)!.settings.name!;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Loading(route: route),
+          ),
+        );
       });
     }
+
     return AppBar(
-      title: Text(text),
+      title: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6.0),
+        child: Text(text),
+      ),
       backgroundColor: blue(),
       actions: [
         Padding(
@@ -33,9 +45,14 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.logout),
             onPressed: () {
               logout();
+              ref.watch(isLogout.notifier).state = true;
               ref.read(sessionProvider.notifier).clearSession();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Loading(route: '/login'),
+                ),
+              );
             },
             tooltip: 'Logout',
           ),

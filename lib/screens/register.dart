@@ -9,6 +9,7 @@ import 'package:app/utils/validate.dart';
 import 'package:app/network/auth.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Register extends ConsumerStatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -59,7 +60,8 @@ class _RegisterState extends ConsumerState<Register> {
     Widget emailForm = FormWidget(
       info: 'Email',
       validator: (String? value) {
-        return checkEmpty(value) ?? validateEmail(value);
+        return Validator.checkEmpty(value) ?? Validator.validateEmail(value);
+
       },
       inputType: TextInputType.emailAddress,
       icon: Icons.email_outlined,
@@ -71,7 +73,8 @@ class _RegisterState extends ConsumerState<Register> {
     Widget nameForm = FormWidget(
       info: 'Name',
       validator: (String? value) {
-        return checkEmpty(value);
+        return Validator.checkEmpty(value);
+
       },
       inputType: TextInputType.name,
       icon: Icons.account_box_rounded,
@@ -84,8 +87,8 @@ class _RegisterState extends ConsumerState<Register> {
       info: 'Password',
       validator: (String? value) {
         return isMobile(context)
-            ? validatePasswordStrengthMobile(value)
-            : validatePasswordStrengthDesktop(value);
+            ? Validator.validatePasswordStrengthMobile(value)
+            : Validator.validatePasswordStrengthDesktop(value);
       },
       callback: (val) => _passwordChanged(val),
       inputType: TextInputType.text,
@@ -108,7 +111,7 @@ class _RegisterState extends ConsumerState<Register> {
     Widget confirmForm = FormWidget(
       info: 'Confirm Password',
       validator: (String? value) {
-        return checkSameValue(_cpassword, _password);
+        return Validator.checkSameValue(_cpassword, _password);
       },
       inputType: TextInputType.text,
       obscureText: _cpasswordVisible,
@@ -128,10 +131,21 @@ class _RegisterState extends ConsumerState<Register> {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
           await register(_email, _password, _username).then((val) {
-            if (val == null) {
-              Navigator.pushNamed(context, '/home');
+            print(val);
+            if (val != '') {
+              Navigator.pushNamed(context, '/memberSchedule');
             } else {
-              //toast
+              Fluttertoast.showToast(
+                msg: 'Account already exists',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 3,
+                backgroundColor: red(),
+                webBgColor: '#888',
+                webPosition: 'center',
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
             }
           });
         }

@@ -31,7 +31,7 @@ class LoadSession {
     try {
       data = await checkAuth();
     } finally {
-      if (data != null) {
+      if (data['err'] == null) {
         member = Member.fromJson(data);
         role = data['role'];
       }

@@ -7,9 +7,9 @@ import 'package:app/widgets/all.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class Exchange extends ConsumerWidget {
+class ExchangeDialog extends ConsumerWidget {
   final Map<String, dynamic> toBeExchanged;
-  const Exchange({
+  const ExchangeDialog({
     Key? key,
     required this.toBeExchanged,
   }) : super(key: key);

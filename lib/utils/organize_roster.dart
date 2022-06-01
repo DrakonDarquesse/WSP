@@ -20,7 +20,7 @@ Map<DutyRoster, List<int>> generateCategory(
   return categories;
 }
 
-List<Widget> header(Set<Role> r) {
+List<Widget> header(Set<Role> r, bool isAdmin) {
   return [
     const Expanded(
       child: TextWidget(
@@ -53,6 +53,15 @@ List<Widget> header(Set<Role> r) {
           compact: false,
         ),
       );
-    }).toList()
+    }).toList(),
+    if (isAdmin)
+      const TextWidget(
+        text: [
+          TextSpan(
+            text: 'Action',
+          ),
+        ],
+        compact: false,
+      ),
   ];
 }

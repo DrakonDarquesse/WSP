@@ -81,7 +81,7 @@ class _BlockedDateFormState extends ConsumerState<BlockedDateForm> {
             _changeNote(value!);
           },
           validator: (String? value) {
-            return checkEmpty(value);
+            return Validator.checkEmpty(value);
           },
           initialValue: bd.note,
         ),

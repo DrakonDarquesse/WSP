@@ -59,9 +59,10 @@ class _RoleFormWidgetState extends ConsumerState<RoleFormWidget> {
           validator: (String? value) {
             final _roles = ref.watch(roleListProvider);
             if (ref.watch(modeProvider) == Mode.add) {
-              return checkEmpty(value) ?? checkDuplicate(_roles, value!);
+              return Validator.checkEmpty(value) ??
+                  Validator.checkDuplicate(_roles, value!);
             } else {
-              return checkEmpty(value);
+              return Validator.checkEmpty(value);
             }
           },
           save: (String? value) {

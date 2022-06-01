@@ -161,6 +161,7 @@ class RoleMemberForm extends ConsumerWidget {
                         .watch(rosterProvider)
                         .roleMembers
                         .where((rm) => rm.role == ref.watch(roleProvider))
+                        .where((rm) => rm.member.name.isNotEmpty)
                         .map<Chip>((choice) {
                       return Chip(
                         avatar: CircleAvatar(

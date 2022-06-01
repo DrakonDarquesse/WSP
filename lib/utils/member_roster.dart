@@ -1,4 +1,5 @@
 import 'package:app/models/duty_roster.dart';
+import 'package:app/models/exchange.dart';
 import 'package:app/models/member.dart';
 import 'package:app/models/role_member.dart';
 import 'package:app/utils/enum.dart';
@@ -32,4 +33,8 @@ List<Map<String, dynamic>> getAccepted(List<Map<String, dynamic>> rosters) {
         e['roleMember'].status == Status.changeSource ||
         e['roleMember'].status == Status.changeTarget;
   }).toList();
+}
+
+List<Exchange> getExchange(Member? member, List<Exchange> rosters) {
+  return rosters.where((e) => e.target.member == member).toList();
 }

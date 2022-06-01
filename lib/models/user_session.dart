@@ -6,12 +6,13 @@ class UserSession extends StateNotifier<Member?> {
   UserSession({required this.loadSession}) : super(null);
 
   final LoadSession loadSession;
-  late String? id;
-  late String? role;
-  bool signedIn = false;
+  String? id;
+  String? role;
+  bool? signedIn;
 
   Future<void> getMember() async {
     try {
+      signedIn = null;
       state = null;
       await loadSession.loadMember();
     } finally {

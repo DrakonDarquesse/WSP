@@ -19,16 +19,6 @@ Future<String> login(String email, String password) async {
     },
   ).then((response) async {
     if (response.statusCode == 200) {
-      if (response.body == 'auth/wrong-password') {
-        return '1';
-        // return 'Wrong password.';
-      }
-
-      if (response.body == 'auth/user-not-found') {
-        return '2';
-        return 'User not found.';
-      }
-
       return response.body;
     } else {
       throw Exception('Failed to login');
@@ -36,7 +26,7 @@ Future<String> login(String email, String password) async {
   });
 }
 
-Future<String?> register(String email, String password, String name) async {
+Future<String> register(String email, String password, String name) async {
   const String api_url = 'https://afternoon-shore-55342.herokuapp.com/register';
   // const String api_url = 'http://localhost:3000/register';
 
@@ -54,9 +44,6 @@ Future<String?> register(String email, String password, String name) async {
     },
   ).then((response) async {
     if (response.statusCode == 200) {
-      if (response.body == 'auth/email-already-in-use') {
-        return '3';
-      }
       return response.body;
     } else {
       throw Exception('Failed to login');
